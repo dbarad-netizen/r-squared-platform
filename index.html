@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>R Squared — Public Asset Opportunity Intelligence Platform (California Demo)</title>
+<style>
+  :root{
+    --navy:#1F3864; --navy2:#2b4d86; --blue:#2E75B6; --light:#D9E2F3; --grey:#F4F6F9;
+    --green:#3f7d20; --amber:#BF8F00; --red:#C00000; --ink:#222831; --muted:#6b7480; --line:#dde2ea;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;
+    color:var(--ink);background:#eceff4;line-height:1.45;font-size:14px;}
+  a{color:var(--blue);}
+  header{background:linear-gradient(135deg,var(--navy),var(--navy2));color:#fff;padding:20px 26px;}
+  .brand{display:flex;align-items:center;gap:13px;}
+  .logo{width:42px;height:42px;border-radius:9px;background:#fff;color:var(--navy);
+    font-weight:800;font-size:20px;display:flex;align-items:center;justify-content:center;letter-spacing:-1px;}
+  header h1{margin:0;font-size:19px;}
+  header .sub{opacity:.86;font-size:12.5px;margin-top:2px;}
+  .bondbar{background:#13284a;color:#cfe0ff;font-size:12.5px;padding:8px 26px;border-top:1px solid #2c4571;}
+  .bondbar b{color:#fff;}
+  .container{max-width:1280px;margin:0 auto;padding:18px;}
+  /* stats */
+  .stats{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:16px;}
+  .stat{background:#fff;border:1px solid var(--line);border-radius:11px;padding:13px 15px;}
+  .stat .n{font-size:24px;font-weight:800;color:var(--navy);}
+  .stat .l{font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);margin-top:2px;}
+  /* layout */
+  .toolbar{background:#fff;border:1px solid var(--line);border-radius:11px;padding:12px 14px;
+    display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:14px;}
+  .toolbar input[type=text]{flex:1;min-width:180px;padding:9px 11px;border:1px solid var(--line);
+    border-radius:8px;font-family:inherit;font-size:13px;}
+  .toolbar select{padding:9px 10px;border:1px solid var(--line);border-radius:8px;font-family:inherit;font-size:13px;background:#fff;}
+  .chiprow{display:flex;gap:6px;flex-wrap:wrap;}
+  .chip{font-size:12px;padding:6px 12px;border-radius:20px;border:1px solid var(--line);
+    background:#fff;cursor:pointer;color:var(--muted);user-select:none;}
+  .chip.active{background:var(--navy);color:#fff;border-color:var(--navy);}
+  .count{font-size:12.5px;color:var(--muted);margin:0 0 10px 2px;}
+  /* cards */
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(370px,1fr));gap:14px;}
+  .card{background:#fff;border:1px solid var(--line);border-radius:13px;overflow:hidden;
+    cursor:pointer;transition:box-shadow .15s,transform .15s;display:flex;flex-direction:column;}
+  .card:hover{box-shadow:0 6px 22px rgba(20,40,80,.13);transform:translateY(-2px);}
+  .card .top{display:flex;justify-content:space-between;padding:14px 15px 10px;gap:12px;}
+  .card .name{font-weight:700;font-size:15px;line-height:1.25;color:var(--navy);}
+  .card .loc{font-size:12px;color:var(--muted);margin-top:3px;}
+  .scorebadge{text-align:center;flex-shrink:0;}
+  .scorebadge .grade{font-size:13px;font-weight:800;color:#fff;border-radius:7px;padding:2px 8px;display:inline-block;}
+  .scorebadge .val{font-size:21px;font-weight:800;color:var(--navy);line-height:1.1;margin-top:4px;}
+  .scorebadge .small{font-size:10px;color:var(--muted);}
+  .tags{display:flex;flex-wrap:wrap;gap:6px;padding:0 15px 10px;}
+  .tag{font-size:10.5px;font-weight:600;padding:3px 8px;border-radius:6px;letter-spacing:.2px;}
+  .tag.fed{background:#e7eefb;color:#26477e;}
+  .tag.state{background:#e8f3ea;color:#2f6b35;}
+  .tag.priv{background:#f3ecf8;color:#6a3b8f;}
+  .tag.type{background:#eef1f5;color:#566;}
+  .tag.sold{background:#f6e4e4;color:#9a2b2b;}
+  .bondfit{padding:8px 15px;border-top:1px solid var(--line);font-size:12px;display:flex;
+    justify-content:space-between;align-items:center;background:var(--grey);margin-top:auto;}
+  .dot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:5px;}
+  .units{font-weight:700;color:var(--navy);}
+  /* modal */
+  .overlay{position:fixed;inset:0;background:rgba(20,30,50,.55);display:none;align-items:flex-start;
+    justify-content:center;padding:30px 16px;overflow:auto;z-index:50;}
+  .overlay.show{display:flex;}
+  .modal{background:#fff;max-width:880px;width:100%;border-radius:15px;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.3);}
+  .mhead{background:linear-gradient(135deg,var(--navy),var(--navy2));color:#fff;padding:20px 24px;position:relative;}
+  .mhead h2{margin:0;font-size:21px;}
+  .mhead .mloc{opacity:.85;font-size:13px;margin-top:4px;}
+  .mhead .x{position:absolute;top:16px;right:18px;font-size:24px;cursor:pointer;opacity:.8;line-height:1;}
+  .mhead .x:hover{opacity:1;}
+  .mscore{display:flex;gap:18px;align-items:center;margin-top:14px;}
+  .mscore .big{font-size:40px;font-weight:800;line-height:1;}
+  .mscore .gr{font-size:22px;font-weight:800;padding:4px 14px;border-radius:9px;}
+  .mbody{padding:20px 24px;}
+  .mbody h3{font-size:12px;text-transform:uppercase;letter-spacing:.6px;color:var(--blue);
+    margin:20px 0 9px;border-bottom:1px solid var(--line);padding-bottom:5px;}
+  .mbody h3:first-child{margin-top:0;}
+  .kv{display:grid;grid-template-columns:1fr 1fr;gap:6px 22px;font-size:13px;}
+  .kv div{display:flex;justify-content:space-between;gap:10px;border-bottom:1px dashed #e7ebf1;padding:4px 0;}
+  .kv .k{color:var(--muted);}
+  .kv .v{font-weight:600;text-align:right;}
+  /* score breakdown */
+  .scoretbl{font-size:12.5px;}
+  .srow{display:grid;grid-template-columns:150px 42px 1fr 50px;gap:10px;align-items:center;padding:4px 0;}
+  .srow .cat{color:#333;}
+  .srow .wt{color:var(--muted);font-size:11px;text-align:right;}
+  .srow .barwrap{height:9px;background:#eaeef4;border-radius:5px;overflow:hidden;}
+  .srow .barwrap > span{display:block;height:100%;border-radius:5px;}
+  .srow .sc{font-weight:700;text-align:right;color:var(--navy);}
+  .bondbox{background:var(--grey);border:1px solid var(--line);border-radius:10px;padding:12px 14px;}
+  .progs{display:flex;flex-wrap:wrap;gap:7px;margin-top:8px;}
+  .prog{font-size:11.5px;background:#e7eefb;color:#26477e;padding:4px 9px;border-radius:6px;font-weight:600;}
+  ul.lst{margin:6px 0 0;padding-left:18px;}
+  ul.lst li{margin-bottom:4px;}
+  .note{font-size:11.5px;color:var(--muted);margin-top:18px;border-top:1px solid var(--line);padding-top:10px;}
+  footer{max-width:1280px;margin:8px auto 36px;padding:0 18px;font-size:11.5px;color:var(--muted);}
+  @media(max-width:760px){.stats{grid-template-columns:repeat(2,1fr);}.kv{grid-template-columns:1fr;}.srow{grid-template-columns:120px 34px 1fr 42px;}}
+</style>
+</head>
+<body>
+<header>
+  <div class="brand">
+    <div class="logo">R²</div>
+    <div>
+      <h1>Public Asset Opportunity Intelligence Platform</h1>
+      <div class="sub">California demonstration · Surplus public &amp; underused property, scored for housing redevelopment</div>
+    </div>
+  </div>
+</header>
+<div class="bondbar">
+  Tuned to the <b>Veterans &amp; Affordable Housing Bond Act of 2026 (SB 417)</b> — $11.25B on the Nov 2026 ballot. Sites are ranked for bond-financeable housing potential.
+</div>
+
+<div class="container">
+  <div class="stats" id="stats"></div>
+
+  <div class="toolbar">
+    <input type="text" id="search" placeholder="Search by name, city, or owner…" oninput="render()">
+    <select id="sort" onchange="render()">
+      <option value="score">Sort: Opportunity Score</option>
+      <option value="units">Sort: Housing potential</option>
+      <option value="name">Sort: Name (A–Z)</option>
+    </select>
+    <select id="region" onchange="render()">
+      <option value="">All regions</option>
+      <option>SoCal</option><option>Bay Area</option><option>Central Valley</option>
+    </select>
+  </div>
+  <div class="toolbar" style="margin-top:-6px;">
+    <span style="font-size:12px;color:var(--muted);">Owner:</span>
+    <div class="chiprow" id="ownerChips"></div>
+    <span style="font-size:12px;color:var(--muted);margin-left:8px;">Bond fit:</span>
+    <div class="chiprow" id="bondChips"></div>
+  </div>
+
+  <div class="count" id="count"></div>
+  <div class="grid" id="grid"></div>
+</div>
+
+<div class="overlay" id="overlay" onclick="if(event.target===this)closeModal()">
+  <div class="modal" id="modal"></div>
+</div>
+
+<footer>
+  <b>About this demo.</b> Property facts (owner, location, size, status, redevelopment context) are drawn from public sources as of June 2026 — GSA disposition announcements, California’s Excess Sites program, city adaptive-reuse and conversion programs, and press reporting. The 12-category scores and the R Squared Opportunity Score are <b>illustrative analyst estimates</b> demonstrating the methodology, not investment advice or appraisals. All data is local to this browser tab.
+</footer>
+
+<script>
+/* ---------- scoring model ---------- */
+const WEIGHTS = {
+  "Market Demand":15,"Financial Return":20,"Entitlement Risk":10,"Environmental Risk":10,
+  "Public Benefit":10,"Housing Potential":10,"Acquisition Complexity":5,"Political Feasibility":5,
+  "Infrastructure":5,"Financing Availability":5,"Strategic Importance":5
+};
+function weighted(s){let t=0;for(const k in WEIGHTS)t+=WEIGHTS[k]*(s[k]||0)/100;return t;}
+function letter(v){
+  if(v>=85)return["A+","#2f6b35"];if(v>=78)return["A","#2f6b35"];if(v>=72)return["A-","#3f7d20"];
+  if(v>=66)return["B+","#6f8b1e"];if(v>=60)return["B","#BF8F00"];if(v>=54)return["B-","#BF8F00"];
+  if(v>=48)return["C+","#c5740e"];if(v>=40)return["C","#C00000"];return["D","#C00000"];
+}
+function barColor(sc){if(sc>=75)return"#3f7d20";if(sc>=55)return"#BF8F00";return"#C00000";}
+
+/* ---------- data: real California sites ---------- */
+const DATA = [
+ {
+  id:"ziggurat", name:"Chet Holifield Federal Building (“The Ziggurat”)",
+  city:"Laguna Niguel", region:"SoCal", owner:"Federal", ownerDetail:"GSA (surplus)",
+  type:"Gov office → mixed-use", size:"~1,000,000 sq ft · ~90 ac", year:"1971",
+  status:"Listed for sale (CBRE)", transacted:false, units:"2,000–4,000",
+  bondFit:"High", bondPrograms:["Multifamily Housing Program","Permanent Supportive","Infill Infrastructure","CalVet (veteran component)"],
+  hbu:"Master-planned mixed-use district anchored by 2,000–4,000 homes with retail, civic and partial adaptive reuse.",
+  highlights:["Rare ~90-acre infill site in supply-constrained S. Orange County","City-designated “Opportunity Area” with ULI-backed 2,000–4,000 home vision","Iconic William Pereira landmark — marquee, reputation-defining project"],
+  risks:["Entitlement: rezone + General Plan amendment, density pushback","Capital: all-cash + demolition sank two prior buyers","Construction: abating/demolishing a 1M sq ft 1971 concrete structure"],
+  scores:{"Market Demand":90,"Financial Return":62,"Entitlement Risk":45,"Environmental Risk":55,"Public Benefit":85,"Housing Potential":88,"Acquisition Complexity":40,"Political Feasibility":55,"Infrastructure":75,"Financing Availability":70,"Strategic Importance":80}
+ },
+ {
+  id:"lacare", name:"L.A. Care Tower, 1055 W. 7th Street",
+  city:"Los Angeles (DTLA)", region:"SoCal", owner:"Private", ownerDetail:"Jamison Properties",
+  type:"Office-to-residential", size:"32 stories", year:"1987",
+  status:"Conversion planned (~686 units)", transacted:false, units:"686",
+  bondFit:"Medium", bondPrograms:["Multifamily Housing Program (affordable component)","Anti-displacement & Preservation"],
+  hbu:"Adaptive-reuse conversion to ~686 apartments under LA’s new citywide office-to-housing reform.",
+  highlights:["Enabled by LA’s 2026 citywide adaptive-reuse / conversion law","No full seismic retrofit required (~10% cost saving, faster timeline)","Downtown transit-rich location amid 50M+ sq ft of vacant LA office"],
+  risks:["Primarily market-rate / privately controlled — JV access limited","DTLA residential absorption and concessions","Conversion floorplate / systems complexity"],
+  scores:{"Market Demand":85,"Financial Return":72,"Entitlement Risk":80,"Environmental Risk":75,"Public Benefit":70,"Housing Potential":90,"Acquisition Complexity":65,"Political Feasibility":75,"Infrastructure":90,"Financing Availability":75,"Strategic Importance":70}
+ },
+ {
+  id:"riverside", name:"Underutilized State Property — Riverside",
+  city:"Riverside", region:"SoCal", owner:"State", ownerDetail:"CA Excess Sites (DGS/HCD)",
+  type:"Surplus state land → affordable", size:"State parcel", year:"—",
+  status:"Awarded — ~209 affordable homes", transacted:false, units:"209",
+  bondFit:"High", bondPrograms:["Multifamily Housing Program","Permanent Supportive","Infill Infrastructure","CalHome"],
+  hbu:"100% affordable community on fast-tracked state surplus land via the Excess Sites program.",
+  highlights:["Live Excess Sites award (announced Nov 2025) — 209 affordable homes","State ground-lease path lowers acquisition cost & complexity","Directly aligned with bond’s affordable-housing priorities"],
+  risks:["Inland Empire rents cap financial upside","Affordable financing stack assembly (LIHTC + bond + state)","Service/operations partner required for supportive units"],
+  scores:{"Market Demand":80,"Financial Return":65,"Entitlement Risk":78,"Environmental Risk":70,"Public Benefit":92,"Housing Potential":82,"Acquisition Complexity":80,"Political Feasibility":80,"Infrastructure":75,"Financing Availability":90,"Strategic Importance":60}
+ },
+ {
+  id:"menlo", name:"Rockaway Grove (former USGS Campus)",
+  city:"Menlo Park", region:"Bay Area", owner:"Federal", ownerDetail:"GSA (former USGS)",
+  type:"Federal campus → redevelopment", size:"Campus", year:"—",
+  status:"SOLD Aug 2025 ($137M) — benchmark comp", transacted:true, units:"~1,000 (potential)",
+  bondFit:"Medium", bondPrograms:["Multifamily Housing Program (affordable component)","Infill Infrastructure"],
+  hbu:"High-value Peninsula campus redevelopment; included here as a transacted benchmark for the scoring model.",
+  highlights:["Recent real disposition: $137M sealed-bid sale (Aug 2025)","Premium Peninsula location, strong fundamentals","Calibration comp — shows how the model scores a closed deal"],
+  risks:["Already transacted — not an active opportunity","Peninsula entitlement & community process","High basis demands premium execution"],
+  scores:{"Market Demand":92,"Financial Return":78,"Entitlement Risk":55,"Environmental Risk":60,"Public Benefit":70,"Housing Potential":80,"Acquisition Complexity":60,"Political Feasibility":60,"Infrastructure":80,"Financing Availability":65,"Strategic Importance":72}
+ },
+ {
+  id:"napa", name:"Surplus State Site — Napa",
+  city:"Napa", region:"Bay Area", owner:"State", ownerDetail:"CA Excess Sites (DGS/HCD)",
+  type:"Surplus state land → affordable", size:"State parcel", year:"—",
+  status:"Excess Sites pipeline", transacted:false, units:"~200",
+  bondFit:"High", bondPrograms:["Multifamily Housing Program","Infill Infrastructure","Farmworker Housing (potential)"],
+  hbu:"Affordable / workforce housing on state surplus land in a high-cost North Bay market.",
+  highlights:["High-cost North Bay market with acute workforce-housing need","State surplus land lowers acquisition complexity","Possible farmworker-housing eligibility broadens funding"],
+  risks:["Smaller scale limits absolute returns","Local approvals & community process","Site-specific environmental review"],
+  scores:{"Market Demand":75,"Financial Return":62,"Entitlement Risk":70,"Environmental Risk":72,"Public Benefit":85,"Housing Potential":72,"Acquisition Complexity":76,"Political Feasibility":68,"Infrastructure":72,"Financing Availability":84,"Strategic Importance":58}
+ },
+ {
+  id:"stockton", name:"Former DMV Site — Stockton",
+  city:"Stockton", region:"Central Valley", owner:"State", ownerDetail:"CA Excess Sites (former DMV)",
+  type:"Surplus state land → affordable", size:"State parcel", year:"—",
+  status:"Excess Sites — selected for housing", transacted:false, units:"~250",
+  bondFit:"High", bondPrograms:["Multifamily Housing Program","Permanent Supportive","CalHome","Infill Infrastructure"],
+  hbu:"Affordable infill community on a repurposed state DMV parcel.",
+  highlights:["Part of Newsom’s Nov 2025 six-site surplus announcement","Repurposed DMV land — clean, controllable state parcel","Strong public-benefit and financing-availability profile"],
+  risks:["Central Valley rents constrain financial return","Market depth / absorption","Supportive-services partner needed for PSH units"],
+  scores:{"Market Demand":60,"Financial Return":58,"Entitlement Risk":75,"Environmental Risk":75,"Public Benefit":90,"Housing Potential":78,"Acquisition Complexity":80,"Political Feasibility":78,"Infrastructure":70,"Financing Availability":88,"Strategic Importance":55}
+ },
+ {
+  id:"fontana", name:"Former State Hospital Land — Fontana / San Bernardino",
+  city:"Fontana", region:"SoCal", owner:"State", ownerDetail:"CA Excess Sites (Dept. of State Hospitals)",
+  type:"Surplus state land → affordable", size:"State parcel", year:"—",
+  status:"Excess Sites pipeline", transacted:false, units:"~300",
+  bondFit:"High", bondPrograms:["Multifamily Housing Program","Permanent Supportive","Infill Infrastructure"],
+  hbu:"Affordable + supportive housing on repurposed state institutional land in the Inland Empire.",
+  highlights:["Sizable parcel supporting a mixed affordable/supportive program","Inland Empire growth corridor","State land path eases acquisition"],
+  risks:["Former institutional site — possible remediation","Inland Empire rent ceiling on returns","Operations partner essential for supportive units"],
+  scores:{"Market Demand":68,"Financial Return":58,"Entitlement Risk":72,"Environmental Risk":60,"Public Benefit":88,"Housing Potential":80,"Acquisition Complexity":78,"Political Feasibility":72,"Infrastructure":68,"Financing Availability":86,"Strategic Importance":55}
+ },
+ {
+  id:"unplaza", name:"50 United Nations Plaza (Federal Building)",
+  city:"San Francisco (Civic Center)", region:"Bay Area", owner:"Federal", ownerDetail:"GSA",
+  type:"Federal office → conversion", size:"Mid-rise landmark", year:"~2000s reno",
+  status:"Conversion candidate (disposition watch)", transacted:false, units:"~500",
+  bondFit:"Medium", bondPrograms:["Multifamily Housing Program (affordable component)","Infill Infrastructure","SF Downtown Conversion District"],
+  hbu:"Office-to-residential / mixed conversion leveraging SF’s new downtown conversion financing district.",
+  highlights:["Civic Center transit hub; SF conversion incentives active","Eligible for SF Downtown Revitalization Financing District","Part of SF’s ~7,000-home conversion opportunity"],
+  risks:["SF conversion economics remain difficult (high cost)","Federal disposition timing uncertain","32.8% SF office vacancy signals soft demand"],
+  scores:{"Market Demand":70,"Financial Return":55,"Entitlement Risk":65,"Environmental Risk":70,"Public Benefit":75,"Housing Potential":78,"Acquisition Complexity":50,"Political Feasibility":65,"Infrastructure":90,"Financing Availability":80,"Strategic Importance":75}
+ },
+ {
+  id:"pelosi", name:"Speaker Nancy Pelosi Federal Building (SoMa)",
+  city:"San Francisco (SoMa)", region:"Bay Area", owner:"Federal", ownerDetail:"GSA",
+  type:"Federal office → conversion", size:"High-rise complex", year:"2007",
+  status:"Conversion candidate (disposition watch)", transacted:false, units:"~600",
+  bondFit:"Medium", bondPrograms:["Multifamily Housing Program (affordable component)","Infill Infrastructure","SF Downtown Conversion District"],
+  hbu:"Large-scale office-to-residential conversion in SoMa if released to market.",
+  highlights:["Large floorplates near transit; major unit potential","Was on federal-efficiency disposition short list","Could anchor SoMa residential conversion momentum"],
+  risks:["Iconic architecture complicates residential conversion","Uncertain whether/when GSA releases it","SF conversion cost and absorption headwinds"],
+  scores:{"Market Demand":68,"Financial Return":48,"Entitlement Risk":60,"Environmental Risk":65,"Public Benefit":72,"Housing Potential":75,"Acquisition Complexity":45,"Political Feasibility":60,"Infrastructure":88,"Financing Availability":78,"Strategic Importance":70}
+ }
+];
+DATA.forEach(d=>{d.total=weighted(d.scores);});
+
+/* ---------- filters state ---------- */
+let ownerFilter="", bondFilter="";
+const OWNERS=["Federal","State","Private"], BONDS=["High","Medium"];
+
+function setupChips(){
+  const oc=document.getElementById('ownerChips');
+  oc.innerHTML='';
+  ["All",...OWNERS].forEach(o=>{
+    const c=document.createElement('span');c.className='chip'+((ownerFilter===''&&o==="All")||ownerFilter===o?' active':'');
+    c.textContent=o;c.onclick=()=>{ownerFilter=(o==="All"?"":o);setupChips();render();};oc.appendChild(c);
+  });
+  const bc=document.getElementById('bondChips');
+  bc.innerHTML='';
+  ["All",...BONDS].forEach(b=>{
+    const c=document.createElement('span');c.className='chip'+((bondFilter===''&&b==="All")||bondFilter===b?' active':'');
+    c.textContent=b;c.onclick=()=>{bondFilter=(b==="All"?"":b);setupChips();render();};bc.appendChild(c);
+  });
+}
+
+function ownerClass(o){return o==="Federal"?"fed":o==="State"?"state":"priv";}
+
+function stats(){
+  const active=DATA.filter(d=>!d.transacted);
+  const totUnits=active.reduce((s,d)=>{const n=parseInt((d.units+"").replace(/[^\d]/g,''))||0;return s+n;},0);
+  const avg=(active.reduce((s,d)=>s+d.total,0)/active.length).toFixed(1);
+  const bondHigh=active.filter(d=>d.bondFit==="High").length;
+  const grades=active.filter(d=>d.total>=72).length;
+  const el=document.getElementById('stats');
+  const cards=[
+    [active.length,"Active opportunities"],
+    ["~"+totUnits.toLocaleString(),"Housing units in scope"],
+    [avg,"Avg opportunity score"],
+    [bondHigh,"High bond-fit sites"],
+    [grades,"Rated A- or better"],
+  ];
+  el.innerHTML=cards.map(c=>`<div class="stat"><div class="n">${c[0]}</div><div class="l">${c[1]}</div></div>`).join('');
+}
+
+function render(){
+  const q=document.getElementById('search').value.toLowerCase();
+  const sort=document.getElementById('sort').value;
+  const region=document.getElementById('region').value;
+  let list=DATA.filter(d=>{
+    if(ownerFilter&&d.owner!==ownerFilter)return false;
+    if(bondFilter&&d.bondFit!==bondFilter)return false;
+    if(region&&d.region!==region)return false;
+    if(q&&!(d.name+d.city+d.ownerDetail+d.type).toLowerCase().includes(q))return false;
+    return true;
+  });
+  list.sort((a,b)=>{
+    if(sort==="name")return a.name.localeCompare(b.name);
+    if(sort==="units"){const ua=parseInt((a.units+"").replace(/[^\d]/g,''))||0,ub=parseInt((b.units+"").replace(/[^\d]/g,''))||0;return ub-ua;}
+    return b.total-a.total;
+  });
+  document.getElementById('count').textContent=`${list.length} ${list.length===1?'opportunity':'opportunities'} shown`;
+  const g=document.getElementById('grid');
+  g.innerHTML=list.map((d,i)=>{
+    const [gr,col]=letter(d.total);
+    const rank=sort==="score"?`<span style="font-size:11px;color:var(--muted);">#${i+1}</span> `:'';
+    const bondCol=d.bondFit==="High"?"#3f7d20":d.bondFit==="Medium"?"#BF8F00":"#C00000";
+    return `<div class="card" onclick="openModal('${d.id}')">
+      <div class="top">
+        <div><div class="name">${rank}${d.name}</div><div class="loc">${d.city} · ${d.region}</div></div>
+        <div class="scorebadge">
+          <span class="grade" style="background:${col}">${gr}</span>
+          <div class="val">${d.total.toFixed(1)}</div><div class="small">/ 100</div>
+        </div>
+      </div>
+      <div class="tags">
+        <span class="tag ${ownerClass(d.owner)}">${d.ownerDetail}</span>
+        <span class="tag type">${d.type}</span>
+        ${d.transacted?'<span class="tag sold">Transacted comp</span>':''}
+      </div>
+      <div class="bondfit">
+        <span><span class="dot" style="background:${bondCol}"></span>Bond fit: <b>${d.bondFit}</b></span>
+        <span>Housing: <span class="units">${d.units}</span></span>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function openModal(id){
+  const d=DATA.find(x=>x.id===id);if(!d)return;
+  const [gr,col]=letter(d.total);
+  const cats=Object.keys(WEIGHTS);
+  const rows=cats.map(c=>{
+    const sc=d.scores[c];
+    return `<div class="srow">
+      <span class="cat">${c}</span><span class="wt">${WEIGHTS[c]}%</span>
+      <span class="barwrap"><span style="width:${sc}%;background:${barColor(sc)}"></span></span>
+      <span class="sc">${sc}</span></div>`;
+  }).join('');
+  const kv=[
+    ["Owner",d.ownerDetail],["Type",d.type],["Location",d.city+" · "+d.region],
+    ["Size",d.size],["Year",d.year],["Status",d.status],
+    ["Highest & best use",d.hbu]
+  ].map(([k,v],i)=>`<div${k==="Highest & best use"?' style="grid-column:1/3"':''}><span class="k">${k}</span><span class="v">${v}</span></div>`).join('');
+  document.getElementById('modal').innerHTML=`
+    <div class="mhead">
+      <span class="x" onclick="closeModal()">&times;</span>
+      <h2>${d.name}</h2>
+      <div class="mloc">${d.city} · ${d.region} · ${d.ownerDetail}</div>
+      <div class="mscore">
+        <span class="gr" style="background:${col}">${gr}</span>
+        <div><span class="big">${d.total.toFixed(1)}</span> <span style="opacity:.8;">/ 100 · R Squared Opportunity Score</span></div>
+      </div>
+    </div>
+    <div class="mbody">
+      <h3>Property profile</h3>
+      <div class="kv">${kv}</div>
+      <h3>12-Category score breakdown</h3>
+      <div class="scoretbl">${rows}</div>
+      <h3>Bond fit — ${d.bondFit}</h3>
+      <div class="bondbox">Eligible / target programs under the 2026 housing bond:
+        <div class="progs">${d.bondPrograms.map(p=>`<span class="prog">${p}</span>`).join('')}</div>
+      </div>
+      <h3>Top value drivers</h3>
+      <ul class="lst">${d.highlights.map(h=>`<li>${h}</li>`).join('')}</ul>
+      <h3>Key risks</h3>
+      <ul class="lst">${d.risks.map(r=>`<li>${r}</li>`).join('')}</ul>
+      <div class="note">Scores are illustrative analyst estimates demonstrating the R Squared methodology. Property facts from public sources (GSA, CA Excess Sites / DGS-HCD, city programs, press) as of June 2026. Not investment advice or an appraisal.</div>
+    </div>`;
+  document.getElementById('overlay').classList.add('show');
+}
+function closeModal(){document.getElementById('overlay').classList.remove('show');}
+document.addEventListener('keydown',e=>{if(e.key==="Escape")closeModal();});
+
+setupChips();stats();render();
+</script>
+</body>
+</html>
