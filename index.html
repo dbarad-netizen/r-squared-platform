@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>R Squared — Public Asset Opportunity Intelligence Platform (California Demo)</title>
+<title>R Squared — Public Asset Opportunity Intelligence Platform (National Demo)</title>
 <style>
   :root{
     --navy:#1F3864; --navy2:#2b4d86; --blue:#2E75B6; --light:#D9E2F3; --grey:#F4F6F9;
@@ -18,8 +18,9 @@
     font-weight:800;font-size:20px;display:flex;align-items:center;justify-content:center;letter-spacing:-1px;}
   header h1{margin:0;font-size:19px;}
   header .sub{opacity:.86;font-size:12.5px;margin-top:2px;}
-  .bondbar{background:#13284a;color:#cfe0ff;font-size:12.5px;padding:8px 26px;border-top:1px solid #2c4571;}
-  .bondbar b{color:#fff;}
+  .policybar{background:#13284a;color:#cfe0ff;font-size:12.5px;padding:9px 26px;border-top:1px solid #2c4571;display:flex;gap:18px;flex-wrap:wrap;}
+  .policybar b{color:#fff;}
+  .policybar .pill{background:#21487e;border-radius:20px;padding:2px 10px;font-size:11.5px;}
   .container{max-width:1280px;margin:0 auto;padding:18px;}
   .stats{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:16px;}
   .stat{background:#fff;border:1px solid var(--line);border-radius:11px;padding:13px 15px;}
@@ -27,7 +28,7 @@
   .stat .l{font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);margin-top:2px;}
   .toolbar{background:#fff;border:1px solid var(--line);border-radius:11px;padding:12px 14px;
     display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:14px;}
-  .toolbar input[type=text]{flex:1;min-width:180px;padding:9px 11px;border:1px solid var(--line);
+  .toolbar input[type=text]{flex:1;min-width:170px;padding:9px 11px;border:1px solid var(--line);
     border-radius:8px;font-family:inherit;font-size:13px;}
   .toolbar select{padding:9px 10px;border:1px solid var(--line);border-radius:8px;font-family:inherit;font-size:13px;background:#fff;}
   .viewtoggle{display:flex;border:1px solid var(--line);border-radius:8px;overflow:hidden;}
@@ -62,20 +63,20 @@
   .dot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:5px;}
   .units{font-weight:700;color:var(--navy);}
   /* map */
-  .mapwrap{display:none;background:#fff;border:1px solid var(--line);border-radius:13px;padding:10px;}
-  .mapwrap.show{display:grid;grid-template-columns:380px 1fr;gap:8px;}
+  .mapwrap{display:none;background:#fff;border:1px solid var(--line);border-radius:13px;padding:12px;}
+  .mapwrap.show{display:grid;grid-template-columns:1fr 300px;gap:10px;}
   .mapcanvas{position:relative;background:linear-gradient(180deg,#eaf1fb,#dfeaf6);border-radius:10px;overflow:hidden;}
   .mapcanvas svg{display:block;width:100%;height:auto;}
-  .calpoly{fill:#f7faff;stroke:#9db4d4;stroke-width:1.2;}
+  .uspoly{fill:#f7faff;stroke:#9db4d4;stroke-width:1;}
   .mk{cursor:pointer;transition:r .1s;}
   .mk:hover{stroke:#111;stroke-width:2;}
-  .maplist{max-height:560px;overflow:auto;border-left:1px solid var(--line);padding-left:8px;}
+  .maplist{max-height:520px;overflow:auto;border-left:1px solid var(--line);padding-left:10px;}
   .maprow{display:flex;align-items:center;gap:10px;padding:7px 8px;border-radius:8px;cursor:pointer;}
   .maprow:hover{background:var(--grey);}
   .maprow .mg{width:30px;height:30px;border-radius:7px;color:#fff;font-weight:800;font-size:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
   .maprow .mn{font-size:12.5px;font-weight:600;color:var(--navy);line-height:1.2;}
   .maprow .ml{font-size:11px;color:var(--muted);}
-  .maplegend{display:flex;gap:14px;flex-wrap:wrap;font-size:11.5px;color:var(--muted);padding:8px 4px 2px;}
+  .maplegend{display:flex;gap:14px;flex-wrap:wrap;font-size:11.5px;color:var(--muted);padding:8px 4px 2px;grid-column:1/-1;}
   .maplegend span{display:flex;align-items:center;gap:5px;}
   .tipbox{position:absolute;pointer-events:none;background:#13284a;color:#fff;font-size:11.5px;
     padding:5px 9px;border-radius:6px;opacity:0;transition:opacity .1s;white-space:nowrap;transform:translate(-50%,-130%);z-index:5;}
@@ -123,7 +124,6 @@
   .jvfield label{display:flex;justify-content:space-between;font-size:12.5px;margin-bottom:4px;color:#444;}
   .jvfield label b{color:var(--navy);}
   .jvfield input[type=range]{width:100%;}
-  .jvfield .num{font-size:13px;padding:7px 9px;border:1px solid var(--line);border-radius:7px;width:100%;font-family:inherit;}
   .jvout{background:linear-gradient(135deg,#eef4fc,#e3edf9);border:1px solid #cfdcef;border-radius:12px;padding:16px 18px;}
   .jvout .lead{font-size:12px;text-transform:uppercase;letter-spacing:.6px;color:var(--muted);}
   .jvout .total{font-size:34px;font-weight:800;color:var(--navy);line-height:1.1;margin:2px 0 2px;}
@@ -142,19 +142,21 @@
     <div class="logo">R²</div>
     <div>
       <h1>Public Asset Opportunity Intelligence Platform</h1>
-      <div class="sub">California demonstration · Surplus public &amp; underused property, scored for housing redevelopment</div>
+      <div class="sub">National demonstration · Surplus public &amp; underused property across the U.S., scored for housing redevelopment</div>
     </div>
   </div>
 </header>
-<div class="bondbar">
-  Tuned to the <b>Veterans &amp; Affordable Housing Bond Act of 2026 (SB 417)</b> — $11.25B on the Nov 2026 ballot. Sites are ranked for bond-financeable housing potential.
+<div class="policybar">
+  <span><b>Two policy tailwinds:</b></span>
+  <span class="pill">Federal: 21st Century ROAD to Housing Act (passed Congress, June 2026 — streamlines NEPA, OZ priority, RESIDE conversions, public-land database)</span>
+  <span class="pill">California: Veterans &amp; Affordable Housing Bond — $11.25B, Nov 2026 ballot</span>
 </div>
 
 <div class="container">
   <div class="stats" id="stats"></div>
 
   <div class="toolbar">
-    <input type="text" id="search" placeholder="Search by name, city, or owner…" oninput="render()">
+    <input type="text" id="search" placeholder="Search by name, city, state, or owner…" oninput="render()">
     <select id="sort" onchange="render()">
       <option value="score">Sort: Opportunity Score</option>
       <option value="units">Sort: Housing potential</option>
@@ -162,7 +164,7 @@
     </select>
     <select id="region" onchange="render()">
       <option value="">All regions</option>
-      <option>SoCal</option><option>Bay Area</option><option>Central Valley</option>
+      <option>California</option><option>West</option><option>Midwest</option><option>South</option><option>Northeast</option>
     </select>
     <div class="viewtoggle">
       <button id="vList" class="on" onclick="setView('list')">List</button>
@@ -172,7 +174,7 @@
   <div class="toolbar" style="margin-top:-6px;">
     <span style="font-size:12px;color:var(--muted);">Owner:</span>
     <div class="chiprow" id="ownerChips"></div>
-    <span style="font-size:12px;color:var(--muted);margin-left:8px;">Bond fit:</span>
+    <span style="font-size:12px;color:var(--muted);margin-left:8px;">Policy fit:</span>
     <div class="chiprow" id="bondChips"></div>
   </div>
 
@@ -180,16 +182,14 @@
   <div class="grid" id="grid"></div>
 
   <div class="mapwrap" id="mapwrap">
-    <div>
-      <div class="mapcanvas" id="mapcanvas"></div>
-      <div class="maplegend">
-        <span><span class="dot" style="background:#2f6b35"></span>A / A- (72+)</span>
-        <span><span class="dot" style="background:#6f8b1e"></span>B+ (66–71)</span>
-        <span><span class="dot" style="background:#BF8F00"></span>B (60–65)</span>
-        <span>Marker size = housing potential</span>
-      </div>
-    </div>
+    <div class="mapcanvas" id="mapcanvas"></div>
     <div class="maplist" id="maplist"></div>
+    <div class="maplegend">
+      <span><span class="dot" style="background:#2f6b35"></span>A / A- (72+)</span>
+      <span><span class="dot" style="background:#6f8b1e"></span>B+ (66–71)</span>
+      <span><span class="dot" style="background:#BF8F00"></span>B (60–65)</span>
+      <span>Marker size = housing potential</span>
+    </div>
   </div>
 </div>
 
@@ -198,7 +198,7 @@
 </div>
 
 <footer>
-  <b>About this demo.</b> Property facts (owner, location, size, status, redevelopment context) are drawn from public sources as of June 2026 — GSA disposition notices, the VA West LA campus program, California’s Excess Sites &amp; Surplus Land Act, LA Metro Joint Development, and city office-conversion programs. The 12-category scores, the R Squared Opportunity Score, and the JV deal economics are <b>illustrative analyst estimates</b> demonstrating the methodology, not investment advice, appraisals, or guarantees. All data is local to this browser tab.
+  <b>About this demo.</b> Property facts (owner, location, size, status, redevelopment context) are drawn from public sources as of June 2026 — GSA disposition notices, the VA West LA campus program, BLM / SNPLMA federal-land-for-housing actions, the 21st Century ROAD to Housing Act, California’s Excess Sites &amp; Surplus Land Act, LA Metro Joint Development, and city office-conversion programs (NYC 467-m, Chicago LaSalle, LA/SF). The 12-category scores, the R Squared Opportunity Score, and the JV deal economics are <b>illustrative analyst estimates</b> demonstrating the methodology, not investment advice, appraisals, or guarantees. All data is local to this browser tab.
 </footer>
 
 <script>
@@ -216,156 +216,219 @@ function letter(v){
 }
 function barColor(sc){if(sc>=75)return"#3f7d20";if(sc>=55)return"#BF8F00";return"#C00000";}
 
-/* ---------- data: real California sites ---------- */
+/* ---------- data: real U.S. sites ---------- */
 const DATA = [
- {id:"noho", name:"District NoHo — North Hollywood Station", city:"North Hollywood (LA)", region:"SoCal",
-  owner:"Local", ownerDetail:"LA Metro (joint development)", type:"Transit-oriented mixed-use", size:"11.8 acres", year:"—",
+ {id:"noho", name:"District NoHo — North Hollywood Station", city:"North Hollywood", state:"CA", region:"California",
+  owner:"Local", ownerDetail:"LA Metro (joint development)", type:"Transit-oriented mixed-use", size:"11.8 acres",
   status:"JDA approved (TCC / High Street)", transacted:false, units:"~1,500", unitsN:1500, lat:34.168, lon:-118.377,
-  bondFit:"High", bondPrograms:["Multifamily Housing Program","Infill Infrastructure","Permanent Supportive"],
+  bondFit:"High", bondPrograms:["CA Housing Bond — MHP","Infill Infrastructure","Permanent Supportive"],
   hbu:"Metro’s largest-ever joint development: mixed-income housing, retail, office and open space at a major transit hub.",
   highlights:["Largest joint development in LA Metro history","≥311 income-restricted units in early phases","On a B/G-line transit hub — top-tier infrastructure"],
   risks:["Phasing and absorption over a long build-out","Construction cost escalation","Ground-lease structure with Metro"],
   scores:{"Market Demand":88,"Financial Return":68,"Entitlement Risk":75,"Environmental Risk":75,"Public Benefit":82,"Housing Potential":90,"Acquisition Complexity":70,"Political Feasibility":78,"Infrastructure":95,"Financing Availability":80,"Strategic Importance":82}},
 
- {id:"lacare", name:"L.A. Care Tower, 1055 W. 7th Street", city:"Los Angeles (DTLA)", region:"SoCal",
-  owner:"Private", ownerDetail:"Jamison Properties", type:"Office-to-residential", size:"32 stories", year:"1987",
+ {id:"pfizer", name:"Former Pfizer HQ (219–235 E 42nd St)", city:"New York (Midtown East)", state:"NY", region:"Northeast",
+  owner:"Private", ownerDetail:"Private (conversion)", type:"Office-to-residential", size:"Two towers",
+  status:"Largest U.S. conversion — ~1,600 units", transacted:false, units:"~1,600", unitsN:1600, lat:40.751, lon:-73.972,
+  bondFit:"High", bondPrograms:["NY 467-m tax incentive","ROAD Act — RESIDE / OZ","25% affordable set-aside"],
+  hbu:"Largest U.S. office-to-residential conversion to date — ~1,600 rentals with 25% affordable.",
+  highlights:["Biggest office-to-resi project in the country","25% of units affordable","Midtown East transit + 467-m tax incentive"],
+  risks:["Privately controlled — JV entry limited","Conversion of large floorplates","NYC construction cost"],
+  scores:{"Market Demand":90,"Financial Return":74,"Entitlement Risk":80,"Environmental Risk":78,"Public Benefit":78,"Housing Potential":92,"Acquisition Complexity":58,"Political Feasibility":80,"Infrastructure":96,"Financing Availability":82,"Strategic Importance":82}},
+
+ {id:"lacare", name:"L.A. Care Tower, 1055 W. 7th Street", city:"Los Angeles (DTLA)", state:"CA", region:"California",
+  owner:"Private", ownerDetail:"Jamison Properties", type:"Office-to-residential", size:"32 stories",
   status:"Conversion planned (~686 units)", transacted:false, units:"686", unitsN:686, lat:34.050, lon:-118.262,
-  bondFit:"Medium", bondPrograms:["Multifamily Housing Program (affordable component)","Anti-displacement & Preservation"],
+  bondFit:"Medium", bondPrograms:["CA Housing Bond — MHP (affordable component)","ROAD Act — RESIDE"],
   hbu:"Adaptive-reuse conversion to ~686 apartments under LA’s new citywide office-to-housing reform.",
   highlights:["Enabled by LA’s 2026 citywide adaptive-reuse / conversion law","No full seismic retrofit required (~10% cost saving)","Transit-rich downtown amid 50M+ sq ft of vacant LA office"],
   risks:["Primarily market-rate / privately controlled — JV access limited","DTLA residential absorption and concessions","Conversion floorplate / systems complexity"],
   scores:{"Market Demand":85,"Financial Return":72,"Entitlement Risk":80,"Environmental Risk":75,"Public Benefit":70,"Housing Potential":90,"Acquisition Complexity":65,"Political Feasibility":75,"Infrastructure":90,"Financing Availability":75,"Strategic Importance":70}},
 
- {id:"cityview", name:"CityView Plaza (office-to-residential)", city:"San Jose (Downtown)", region:"Bay Area",
-  owner:"Private", ownerDetail:"Jay Paul Company", type:"Office-to-residential", size:"4-building campus + tower", year:"—",
+ {id:"cityview", name:"CityView Plaza (office-to-residential)", city:"San Jose (Downtown)", state:"CA", region:"California",
+  owner:"Private", ownerDetail:"Jay Paul Company", type:"Office-to-residential", size:"4-building campus + tower",
   status:"Conversion + tower planned (~680 homes)", transacted:false, units:"680", unitsN:680, lat:37.330, lon:-121.893,
-  bondFit:"Medium", bondPrograms:["Multifamily Housing Program (affordable component)","Infill Infrastructure"],
+  bondFit:"Medium", bondPrograms:["CA Housing Bond — MHP (affordable component)","ROAD Act — RESIDE","Infill Infrastructure"],
   hbu:"One of the country’s largest commercial-to-residential conversions plus a 27-story tower — ~680 homes total.",
   highlights:["City granted fee waivers & dropped affordable requirement on the tower","Silicon Valley’s largest city, acute housing need","Downtown San Jose transit access"],
   risks:["Largely market-rate (public-benefit score lower)","Privately controlled — JV entry limited","Conversion feasibility on older floorplates"],
   scores:{"Market Demand":82,"Financial Return":70,"Entitlement Risk":80,"Environmental Risk":76,"Public Benefit":68,"Housing Potential":92,"Acquisition Complexity":60,"Political Feasibility":78,"Infrastructure":90,"Financing Availability":72,"Strategic Importance":75}},
 
- {id:"riverside", name:"Underutilized State Property — Riverside", city:"Riverside", region:"SoCal",
-  owner:"State", ownerDetail:"CA Excess Sites (DGS/HCD)", type:"Surplus state land → affordable", size:"State parcel", year:"—",
+ {id:"riverside", name:"Underutilized State Property — Riverside", city:"Riverside", state:"CA", region:"California",
+  owner:"State", ownerDetail:"CA Excess Sites (DGS/HCD)", type:"Surplus state land → affordable", size:"State parcel",
   status:"Awarded — ~209 affordable homes", transacted:false, units:"209", unitsN:209, lat:33.953, lon:-117.396,
-  bondFit:"High", bondPrograms:["Multifamily Housing Program","Permanent Supportive","Infill Infrastructure","CalHome"],
+  bondFit:"High", bondPrograms:["CA Housing Bond — MHP","Permanent Supportive","Infill Infrastructure","CalHome"],
   hbu:"100% affordable community on fast-tracked state surplus land via the Excess Sites program.",
   highlights:["Live Excess Sites award (Nov 2025) — 209 affordable homes","State ground-lease path lowers acquisition cost & complexity","Directly aligned with the bond’s affordable priorities"],
   risks:["Inland Empire rents cap financial upside","Affordable financing stack assembly (LIHTC + bond + state)","Service/operations partner required for supportive units"],
   scores:{"Market Demand":80,"Financial Return":65,"Entitlement Risk":78,"Environmental Risk":70,"Public Benefit":92,"Housing Potential":82,"Acquisition Complexity":80,"Political Feasibility":80,"Infrastructure":75,"Financing Availability":90,"Strategic Importance":60}},
 
- {id:"wilshire", name:"Wilshire / La Brea Station (D Line)", city:"Los Angeles (Mid-Wilshire)", region:"SoCal",
-  owner:"Local", ownerDetail:"LA Metro (joint development)", type:"Transit-oriented housing", size:"~115,000 sq ft", year:"—",
+ {id:"lasalle", name:"30 N. LaSalle Street (Loop conversion)", city:"Chicago (The Loop)", state:"IL", region:"Midwest",
+  owner:"Private", ownerDetail:"Golub & Co. (+ City TIF)", type:"Office-to-residential", size:"~371,000 sq ft",
+  status:"Approved — 349 units (30% affordable)", transacted:false, units:"349", unitsN:349, lat:41.884, lon:-87.632,
+  bondFit:"High", bondPrograms:["Chicago LaSalle TIF","ROAD Act — RESIDE / OZ","30% affordable set-aside"],
+  hbu:"Anchor of Chicago’s LaSalle Street Reimagined — ~349 homes, 30% affordable, with city TIF support.",
+  highlights:["$57M TIF on a $130M conversion","30% of units affordable at ~60% AMI","Part of a 1,765-unit LaSalle corridor program"],
+  risks:["Loop office values still resetting","Conversion engineering on a vintage tower","Absorption in a recovering downtown"],
+  scores:{"Market Demand":72,"Financial Return":64,"Entitlement Risk":78,"Environmental Risk":75,"Public Benefit":82,"Housing Potential":80,"Acquisition Complexity":62,"Political Feasibility":80,"Infrastructure":92,"Financing Availability":84,"Strategic Importance":68}},
+
+ {id:"wilshire", name:"Wilshire / La Brea Station (D Line)", city:"Los Angeles (Mid-Wilshire)", state:"CA", region:"California",
+  owner:"Local", ownerDetail:"LA Metro (joint development)", type:"Transit-oriented housing", size:"~115,000 sq ft",
   status:"Expected available 2026", transacted:false, units:"~250", unitsN:250, lat:34.062, lon:-118.344,
-  bondFit:"High", bondPrograms:["Multifamily Housing Program","Infill Infrastructure"],
+  bondFit:"High", bondPrograms:["CA Housing Bond — MHP","Infill Infrastructure"],
   hbu:"Transit-oriented housing on a former subway-construction staging site at a new D Line station.",
   highlights:["Prime Mid-Wilshire location on the new subway","Part of Metro’s 10K-homes development pipeline","Strong infrastructure and demand"],
   risks:["Site delivery timing tied to construction completion","Competitive developer solicitation","Cost escalation"],
   scores:{"Market Demand":85,"Financial Return":66,"Entitlement Risk":74,"Environmental Risk":74,"Public Benefit":80,"Housing Potential":82,"Acquisition Complexity":68,"Political Feasibility":74,"Infrastructure":92,"Financing Availability":80,"Strategic Importance":72}},
 
- {id:"balboa", name:"Lake Balboa / Victory Station (G Line)", city:"Lake Balboa (LA)", region:"SoCal",
-  owner:"Local", ownerDetail:"LA Metro (joint development)", type:"Transit-oriented affordable", size:"Park-and-ride lot", year:"—",
+ {id:"balboa", name:"Lake Balboa / Victory Station (G Line)", city:"Lake Balboa, LA", state:"CA", region:"California",
+  owner:"Local", ownerDetail:"LA Metro (joint development)", type:"Transit-oriented affordable", size:"Park-and-ride lot",
   status:"Developer selected (~321 homes)", transacted:false, units:"321", unitsN:321, lat:34.187, lon:-118.502,
-  bondFit:"High", bondPrograms:["Multifamily Housing Program","Permanent Supportive","Infill Infrastructure"],
+  bondFit:"High", bondPrograms:["CA Housing Bond — MHP","Permanent Supportive","Infill Infrastructure"],
   hbu:"Two-phase ~321-home affordable community on a Metro park-and-ride at 6338 Balboa Blvd.",
   highlights:["Concept selected from LA Family Housing — 164 + 157 homes","Metro joint-development ground lease","Bond-aligned affordable program"],
   risks:["Parking replacement / community concerns","Affordable financing assembly","Phased delivery"],
   scores:{"Market Demand":80,"Financial Return":62,"Entitlement Risk":76,"Environmental Risk":75,"Public Benefit":88,"Housing Potential":84,"Acquisition Complexity":72,"Political Feasibility":76,"Infrastructure":88,"Financing Availability":86,"Strategic Importance":65}},
 
- {id:"fairview", name:"Fairview Heights Station (K Line), Inglewood", city:"Inglewood", region:"SoCal",
-  owner:"Local", ownerDetail:"LA Metro (joint development)", type:"Transit-oriented housing", size:"Park-and-ride", year:"—",
+ {id:"fairview", name:"Fairview Heights Station (K Line)", city:"Inglewood", state:"CA", region:"California",
+  owner:"Local", ownerDetail:"LA Metro (joint development)", type:"Transit-oriented housing", size:"Park-and-ride",
   status:"Expected available 2026", transacted:false, units:"~200", unitsN:200, lat:33.958, lon:-118.348,
-  bondFit:"High", bondPrograms:["Multifamily Housing Program","Infill Infrastructure"],
+  bondFit:"High", bondPrograms:["CA Housing Bond — MHP","Infill Infrastructure"],
   hbu:"Transit-oriented housing at a K Line station in fast-growing Inglewood.",
   highlights:["Inglewood growth corridor (SoFi / Intuit Dome / Clippers)","K Line transit connectivity","Metro 10K pipeline site"],
   risks:["Replacement parking and community process","Solicitation timing","Construction costs"],
   scores:{"Market Demand":80,"Financial Return":64,"Entitlement Risk":74,"Environmental Risk":75,"Public Benefit":82,"Housing Potential":80,"Acquisition Complexity":70,"Political Feasibility":74,"Infrastructure":88,"Financing Availability":82,"Strategic Importance":70}},
 
- {id:"vala", name:"West LA VA — North Campus (Veteran Housing)", city:"Los Angeles (West LA)", region:"SoCal",
-  owner:"Federal", ownerDetail:"U.S. Dept. of Veterans Affairs", type:"Veteran supportive housing", size:"Campus", year:"—",
+ {id:"vala", name:"West LA VA — North Campus (Veteran Housing)", city:"Los Angeles (West LA)", state:"CA", region:"California",
+  owner:"Federal", ownerDetail:"U.S. Dept. of Veterans Affairs", type:"Veteran supportive housing", size:"Campus",
   status:"Active RFP + court-ordered buildout", transacted:false, units:"~1,800", unitsN:1800, lat:34.052, lon:-118.452,
-  bondFit:"High", bondPrograms:["CalVet","Permanent Supportive","Multifamily Housing Program"],
+  bondFit:"High", bondPrograms:["CalVet","Permanent Supportive / HUD-VASH","ROAD Act — veterans provisions"],
   hbu:"Nation’s largest permanent supportive housing community for veterans, via enhanced-use lease on federal land.",
   highlights:["Court-affirmed mandate for up to 1,800 permanent + 750 temporary units","Strongest possible public-benefit & veteran alignment","Deep subsidy stack (VASH / CalVet / bond)"],
   risks:["Federal land — enhanced-use lease, not fee purchase","Litigation / oversight complexity","Supportive housing = thin financial return"],
   scores:{"Market Demand":82,"Financial Return":50,"Entitlement Risk":60,"Environmental Risk":65,"Public Benefit":98,"Housing Potential":95,"Acquisition Complexity":45,"Political Feasibility":70,"Infrastructure":80,"Financing Availability":92,"Strategic Importance":85}},
 
- {id:"menlo", name:"Rockaway Grove (former USGS Campus)", city:"Menlo Park", region:"Bay Area",
-  owner:"Federal", ownerDetail:"GSA (former USGS)", type:"Federal campus → redevelopment", size:"Campus", year:"—",
+ {id:"henderson", name:"West Henderson Affordable Housing (BLM land)", city:"Henderson", state:"NV", region:"West",
+  owner:"Federal", ownerDetail:"BLM — SNPLMA ($100/acre)", type:"Federal land → affordable", size:"18.59 acres",
+  status:"Nominated for $100/acre direct sale", transacted:false, units:"~300", unitsN:300, lat:36.000, lon:-115.120,
+  bondFit:"High", bondPrograms:["BLM SNPLMA $100/acre","ROAD Act — federal land for housing","LIHTC"],
+  hbu:"Income-restricted apartments on BLM land sold for nominal cost under the Nevada affordable-housing program.",
+  highlights:["18.59-acre parcel nominated for ~$1,859 total ($100/acre)","Las Vegas Valley housing shortage + strong demand","Model for federal-land-for-housing nationwide"],
+  risks:["Desert infrastructure / utility extension","Affordability restrictions cap returns","Federal conveyance process timing"],
+  scores:{"Market Demand":78,"Financial Return":70,"Entitlement Risk":76,"Environmental Risk":72,"Public Benefit":88,"Housing Potential":80,"Acquisition Complexity":85,"Political Feasibility":78,"Infrastructure":62,"Financing Availability":86,"Strategic Importance":68}},
+
+ {id:"menlo", name:"Rockaway Grove (former USGS Campus)", city:"Menlo Park", state:"CA", region:"California",
+  owner:"Federal", ownerDetail:"GSA (former USGS)", type:"Federal campus → redevelopment", size:"Campus",
   status:"SOLD Aug 2025 ($137M) — benchmark comp", transacted:true, units:"~1,000", unitsN:1000, lat:37.453, lon:-122.182,
-  bondFit:"Medium", bondPrograms:["Multifamily Housing Program (affordable component)","Infill Infrastructure"],
+  bondFit:"Medium", bondPrograms:["CA Housing Bond — MHP (affordable component)","Infill Infrastructure"],
   hbu:"High-value Peninsula campus redevelopment; included as a transacted benchmark for the scoring model.",
   highlights:["Recent real disposition: $137M sealed-bid sale (Aug 2025)","Premium Peninsula location, strong fundamentals","Calibration comp — shows how the model scores a closed deal"],
   risks:["Already transacted — not an active opportunity","Peninsula entitlement & community process","High basis demands premium execution"],
   scores:{"Market Demand":92,"Financial Return":78,"Entitlement Risk":55,"Environmental Risk":60,"Public Benefit":70,"Housing Potential":80,"Acquisition Complexity":60,"Political Feasibility":60,"Infrastructure":80,"Financing Availability":65,"Strategic Importance":72}},
 
- {id:"napa", name:"Surplus State Site — Napa", city:"Napa", region:"Bay Area",
-  owner:"State", ownerDetail:"CA Excess Sites (DGS/HCD)", type:"Surplus state land → affordable", size:"State parcel", year:"—",
+ {id:"napa", name:"Surplus State Site — Napa", city:"Napa", state:"CA", region:"California",
+  owner:"State", ownerDetail:"CA Excess Sites (DGS/HCD)", type:"Surplus state land → affordable", size:"State parcel",
   status:"Excess Sites pipeline", transacted:false, units:"~200", unitsN:200, lat:38.297, lon:-122.287,
-  bondFit:"High", bondPrograms:["Multifamily Housing Program","Infill Infrastructure","Farmworker Housing (potential)"],
+  bondFit:"High", bondPrograms:["CA Housing Bond — MHP","Infill Infrastructure","Farmworker Housing (potential)"],
   hbu:"Affordable / workforce housing on state surplus land in a high-cost North Bay market.",
   highlights:["High-cost North Bay market with acute workforce-housing need","State surplus land lowers acquisition complexity","Possible farmworker-housing eligibility broadens funding"],
   risks:["Smaller scale limits absolute returns","Local approvals & community process","Site-specific environmental review"],
   scores:{"Market Demand":75,"Financial Return":62,"Entitlement Risk":70,"Environmental Risk":72,"Public Benefit":85,"Housing Potential":72,"Acquisition Complexity":76,"Political Feasibility":68,"Infrastructure":72,"Financing Availability":84,"Strategic Importance":58}},
 
- {id:"stockton", name:"Former DMV Site — Stockton", city:"Stockton", region:"Central Valley",
-  owner:"State", ownerDetail:"CA Excess Sites (former DMV)", type:"Surplus state land → affordable", size:"State parcel", year:"—",
+ {id:"stockton", name:"Former DMV Site — Stockton", city:"Stockton", state:"CA", region:"California",
+  owner:"State", ownerDetail:"CA Excess Sites (former DMV)", type:"Surplus state land → affordable", size:"State parcel",
   status:"Excess Sites — selected for housing", transacted:false, units:"~250", unitsN:250, lat:37.958, lon:-121.290,
-  bondFit:"High", bondPrograms:["Multifamily Housing Program","Permanent Supportive","CalHome","Infill Infrastructure"],
+  bondFit:"High", bondPrograms:["CA Housing Bond — MHP","Permanent Supportive","CalHome","Infill Infrastructure"],
   hbu:"Affordable infill community on a repurposed state DMV parcel.",
   highlights:["Part of Newsom’s Nov 2025 six-site surplus announcement","Repurposed DMV land — clean, controllable state parcel","Strong public-benefit & financing profile"],
   risks:["Central Valley rents constrain financial return","Market depth / absorption","Supportive-services partner needed for PSH units"],
   scores:{"Market Demand":60,"Financial Return":58,"Entitlement Risk":75,"Environmental Risk":75,"Public Benefit":90,"Housing Potential":78,"Acquisition Complexity":80,"Political Feasibility":78,"Infrastructure":70,"Financing Availability":88,"Strategic Importance":55}},
 
- {id:"fontana", name:"Former State Hospital Land — Fontana", city:"Fontana / San Bernardino", region:"SoCal",
-  owner:"State", ownerDetail:"CA Excess Sites (Dept. of State Hospitals)", type:"Surplus state land → affordable", size:"State parcel", year:"—",
+ {id:"usda", name:"USDA Headquarters (Whitten Bldg watch)", city:"Washington, D.C.", state:"DC", region:"South",
+  owner:"Federal", ownerDetail:"GSA (accelerated disposition)", type:"Federal office → redevelopment", size:"Historic office",
+  status:"Tagged for accelerated disposition", transacted:false, units:"~400", unitsN:400, lat:38.888, lon:-77.033,
+  bondFit:"Medium", bondPrograms:["GSA disposition","ROAD Act — RESIDE / OZ"],
+  hbu:"Potential mixed-use / residential redevelopment of a marquee federal office on the National Mall, if conveyed.",
+  highlights:["Added to GSA’s accelerated-disposition list","Premier D.C. location and visibility","Part of the largest federal sell-off in a generation"],
+  risks:["Historic / landmark constraints","Federal disposition timing & process","Office-to-resi conversion complexity"],
+  scores:{"Market Demand":78,"Financial Return":58,"Entitlement Risk":50,"Environmental Risk":62,"Public Benefit":70,"Housing Potential":72,"Acquisition Complexity":48,"Political Feasibility":58,"Infrastructure":92,"Financing Availability":72,"Strategic Importance":80}},
+
+ {id:"fontana", name:"Former State Hospital Land — Fontana", city:"Fontana / San Bernardino", state:"CA", region:"California",
+  owner:"State", ownerDetail:"CA Excess Sites (Dept. of State Hospitals)", type:"Surplus state land → affordable", size:"State parcel",
   status:"Excess Sites pipeline", transacted:false, units:"~300", unitsN:300, lat:34.092, lon:-117.435,
-  bondFit:"High", bondPrograms:["Multifamily Housing Program","Permanent Supportive","Infill Infrastructure"],
+  bondFit:"High", bondPrograms:["CA Housing Bond — MHP","Permanent Supportive","Infill Infrastructure"],
   hbu:"Affordable + supportive housing on repurposed state institutional land in the Inland Empire.",
   highlights:["Sizable parcel for a mixed affordable/supportive program","Inland Empire growth corridor","State land path eases acquisition"],
   risks:["Former institutional site — possible remediation","Inland Empire rent ceiling on returns","Operations partner essential for supportive units"],
   scores:{"Market Demand":68,"Financial Return":58,"Entitlement Risk":72,"Environmental Risk":60,"Public Benefit":88,"Housing Potential":80,"Acquisition Complexity":78,"Political Feasibility":72,"Infrastructure":68,"Financing Availability":86,"Strategic Importance":55}},
 
- {id:"alameda", name:"Alameda Point (former NAS Alameda)", city:"Alameda", region:"Bay Area",
-  owner:"Local", ownerDetail:"City of Alameda (former Navy / BRAC)", type:"Former base → master-planned", size:"~1,560 acres", year:"—",
+ {id:"peachtree", name:"Peachtree Summit Federal Building", city:"Atlanta", state:"GA", region:"South",
+  owner:"Federal", ownerDetail:"GSA (disposition)", type:"Federal office → conversion", size:"High-rise office",
+  status:"Identified for disposition", transacted:false, units:"~350", unitsN:350, lat:33.767, lon:-84.385,
+  bondFit:"Medium", bondPrograms:["GSA disposition","ROAD Act — RESIDE / OZ"],
+  hbu:"Downtown Atlanta federal office tower with office-to-residential conversion potential upon disposition.",
+  highlights:["Part of GSA’s 6M+ sq ft inventory reduction","Downtown Atlanta, transit-adjacent","Sun Belt growth and housing demand"],
+  risks:["Disposition process and timing","Conversion feasibility of an office tower","Downtown office market softness"],
+  scores:{"Market Demand":74,"Financial Return":60,"Entitlement Risk":68,"Environmental Risk":66,"Public Benefit":68,"Housing Potential":74,"Acquisition Complexity":55,"Political Feasibility":66,"Infrastructure":86,"Financing Availability":70,"Strategic Importance":66}},
+
+ {id:"alameda", name:"Alameda Point (former NAS Alameda)", city:"Alameda", state:"CA", region:"California",
+  owner:"Local", ownerDetail:"City of Alameda (former Navy / BRAC)", type:"Former base → master-planned", size:"~1,560 acres",
   status:"Master-plan redevelopment underway", transacted:false, units:"~2,000", unitsN:2000, lat:37.775, lon:-122.300,
-  bondFit:"Medium", bondPrograms:["Multifamily Housing Program","Infill Infrastructure"],
+  bondFit:"Medium", bondPrograms:["CA Housing Bond — MHP","Infill Infrastructure"],
   hbu:"Large-scale waterfront master-planned community (≥15% affordable) on a former naval air station.",
   highlights:["Huge waterfront canvas across San Francisco Bay","Established reuse framework with affordable mandate","Multi-phase, multi-thousand-home potential"],
   risks:["Former naval base — significant environmental remediation","Major infrastructure cost (utilities, sea-level rise)","Long, complex multi-decade build-out"],
   scores:{"Market Demand":85,"Financial Return":70,"Entitlement Risk":50,"Environmental Risk":40,"Public Benefit":78,"Housing Potential":88,"Acquisition Complexity":65,"Political Feasibility":68,"Infrastructure":55,"Financing Availability":70,"Strategic Importance":80}},
 
- {id:"ziggurat", name:"Chet Holifield Federal Building (“The Ziggurat”)", city:"Laguna Niguel", region:"SoCal",
-  owner:"Federal", ownerDetail:"GSA (surplus)", type:"Gov office → mixed-use", size:"~1,000,000 sq ft · ~90 ac", year:"1971",
+ {id:"ziggurat", name:"Chet Holifield Federal Building (“The Ziggurat”)", city:"Laguna Niguel", state:"CA", region:"California",
+  owner:"Federal", ownerDetail:"GSA (surplus)", type:"Gov office → mixed-use", size:"~1,000,000 sq ft · ~90 ac",
   status:"Listed for sale (CBRE)", transacted:false, units:"2,000–4,000", unitsN:3000, lat:33.522, lon:-117.707,
-  bondFit:"High", bondPrograms:["Multifamily Housing Program","Permanent Supportive","Infill Infrastructure","CalVet (veteran component)"],
+  bondFit:"High", bondPrograms:["CA Housing Bond — MHP","Permanent Supportive","CalVet (veteran component)","ROAD Act — RESIDE"],
   hbu:"Master-planned mixed-use district anchored by 2,000–4,000 homes with retail, civic and partial adaptive reuse.",
   highlights:["Rare ~90-acre infill site in supply-constrained S. Orange County","City “Opportunity Area” with ULI-backed 2,000–4,000 home vision","Iconic William Pereira landmark — marquee project"],
   risks:["Entitlement: rezone + General Plan amendment, density pushback","Capital: all-cash + demolition sank two prior buyers","Construction: abating/demolishing a 1M sq ft 1971 concrete structure"],
   scores:{"Market Demand":90,"Financial Return":62,"Entitlement Risk":45,"Environmental Risk":55,"Public Benefit":85,"Housing Potential":88,"Acquisition Complexity":40,"Political Feasibility":55,"Infrastructure":75,"Financing Availability":70,"Strategic Importance":80}},
 
- {id:"unplaza", name:"50 United Nations Plaza (Federal Building)", city:"San Francisco (Civic Center)", region:"Bay Area",
-  owner:"Federal", ownerDetail:"GSA", type:"Federal office → conversion", size:"Mid-rise landmark", year:"~2000s reno",
+ {id:"unplaza", name:"50 United Nations Plaza (Federal Building)", city:"San Francisco (Civic Center)", state:"CA", region:"California",
+  owner:"Federal", ownerDetail:"GSA", type:"Federal office → conversion", size:"Mid-rise landmark",
   status:"Conversion candidate (disposition watch)", transacted:false, units:"~500", unitsN:500, lat:37.780, lon:-122.417,
-  bondFit:"Medium", bondPrograms:["Multifamily Housing Program (affordable component)","Infill Infrastructure","SF Downtown Conversion District"],
+  bondFit:"Medium", bondPrograms:["CA Housing Bond — MHP (affordable component)","SF Downtown Conversion District","ROAD Act — RESIDE"],
   hbu:"Office-to-residential / mixed conversion leveraging SF’s new downtown conversion financing district.",
   highlights:["Civic Center transit hub; SF conversion incentives active","Eligible for SF Downtown Revitalization Financing District","Part of SF’s ~7,000-home conversion opportunity"],
   risks:["SF conversion economics remain difficult (high cost)","Federal disposition timing uncertain","32.8% SF office vacancy signals soft demand"],
   scores:{"Market Demand":70,"Financial Return":55,"Entitlement Risk":65,"Environmental Risk":70,"Public Benefit":75,"Housing Potential":78,"Acquisition Complexity":50,"Political Feasibility":65,"Infrastructure":90,"Financing Availability":80,"Strategic Importance":75}},
 
- {id:"alabroad", name:"1000 Broadway (office-to-residential)", city:"Oakland (Downtown)", region:"Bay Area",
-  owner:"Private", ownerDetail:"Private owner", type:"Office-to-residential", size:"~375,000 sq ft", year:"—",
+ {id:"water25", name:"25 Water Street (SoMA, FiDi)", city:"New York (FiDi)", state:"NY", region:"Northeast",
+  owner:"Private", ownerDetail:"Private (delivered)", type:"Office-to-residential", size:"1,320 units",
+  status:"Delivered/leasing — largest completed conversion", transacted:true, units:"1,320", unitsN:1320, lat:40.703, lon:-74.011,
+  bondFit:"Medium", bondPrograms:["NY 467-m tax incentive","Market-rate (benchmark comp)"],
+  hbu:"Largest completed U.S. office-to-residential conversion (1,320 units); included as a delivered benchmark.",
+  highlights:["Nation’s largest completed conversion","Proof of conversion feasibility at scale","Used the new 467-m tax incentive"],
+  risks:["Already delivered — benchmark, not an opportunity","Largely market-rate (lower public benefit)","FiDi absorption / concessions"],
+  scores:{"Market Demand":88,"Financial Return":76,"Entitlement Risk":82,"Environmental Risk":80,"Public Benefit":62,"Housing Potential":90,"Acquisition Complexity":55,"Political Feasibility":80,"Infrastructure":95,"Financing Availability":78,"Strategic Importance":72}},
+
+ {id:"battlecreek", name:"Federal Property — Battle Creek", city:"Battle Creek", state:"MI", region:"Midwest",
+  owner:"Federal", ownerDetail:"GSA (accelerated disposition)", type:"Federal property → redevelopment", size:"Federal site",
+  status:"Listed for accelerated disposition", transacted:false, units:"~150", unitsN:150, lat:42.321, lon:-85.179,
+  bondFit:"Low–Med", bondPrograms:["GSA disposition","ROAD Act — RESIDE / OZ"],
+  hbu:"Smaller-market federal site offering adaptive-reuse or redevelopment potential upon disposal.",
+  highlights:["Actively listed under GSA accelerated disposition","Low-cost basis in an affordable market","Demonstrates the platform beyond gateway cities"],
+  risks:["Thin market demand limits returns","Smaller scale","Disposition timing"],
+  scores:{"Market Demand":52,"Financial Return":55,"Entitlement Risk":72,"Environmental Risk":68,"Public Benefit":62,"Housing Potential":60,"Acquisition Complexity":78,"Political Feasibility":68,"Infrastructure":72,"Financing Availability":62,"Strategic Importance":50}},
+
+ {id:"alabroad", name:"1000 Broadway (office-to-residential)", city:"Oakland (Downtown)", state:"CA", region:"California",
+  owner:"Private", ownerDetail:"Private owner", type:"Office-to-residential", size:"~375,000 sq ft",
   status:"Early conversion concept (top floors)", transacted:false, units:"~100", unitsN:100, lat:37.802, lon:-122.272,
-  bondFit:"Low–Med", bondPrograms:["Anti-displacement & Preservation","Multifamily Housing Program (partial)"],
+  bondFit:"Low–Med", bondPrograms:["ROAD Act — RESIDE","CA Housing Bond — MHP (partial)"],
   hbu:"Partial office-to-residential conversion of upper floors — one of Oakland’s first such projects.",
   highlights:["Among the first office conversions in downtown Oakland","Transit-adjacent (BART) downtown core","Tests the conversion model in a high-vacancy market"],
   risks:["Oakland office market very soft","Small unit count limits scale","Conversion economics challenging"],
   scores:{"Market Demand":65,"Financial Return":55,"Entitlement Risk":70,"Environmental Risk":72,"Public Benefit":60,"Housing Potential":62,"Acquisition Complexity":58,"Political Feasibility":70,"Infrastructure":85,"Financing Availability":65,"Strategic Importance":58}},
 
- {id:"pelosi", name:"Speaker Nancy Pelosi Federal Building (SoMa)", city:"San Francisco (SoMa)", region:"Bay Area",
-  owner:"Federal", ownerDetail:"GSA", type:"Federal office → conversion", size:"High-rise complex", year:"2007",
+ {id:"pelosi", name:"Speaker Nancy Pelosi Federal Building (SoMa)", city:"San Francisco (SoMa)", state:"CA", region:"California",
+  owner:"Federal", ownerDetail:"GSA", type:"Federal office → conversion", size:"High-rise complex",
   status:"Conversion candidate (disposition watch)", transacted:false, units:"~600", unitsN:600, lat:37.776, lon:-122.408,
-  bondFit:"Medium", bondPrograms:["Multifamily Housing Program (affordable component)","Infill Infrastructure","SF Downtown Conversion District"],
+  bondFit:"Medium", bondPrograms:["CA Housing Bond — MHP (affordable component)","SF Downtown Conversion District","ROAD Act — RESIDE"],
   hbu:"Large-scale office-to-residential conversion in SoMa if released to market.",
   highlights:["Large floorplates near transit; major unit potential","Was on a federal-efficiency disposition short list","Could anchor SoMa residential conversion momentum"],
   risks:["Iconic architecture complicates residential conversion","Uncertain whether/when GSA releases it","SF conversion cost and absorption headwinds"],
@@ -393,11 +456,11 @@ function stats(){
   const active=DATA.filter(d=>!d.transacted);
   const totUnits=active.reduce((s,d)=>s+(d.unitsN||0),0);
   const avg=(active.reduce((s,d)=>s+d.total,0)/active.length).toFixed(1);
-  const bondHigh=active.filter(d=>d.bondFit==="High").length;
+  const states=new Set(active.map(d=>d.state)).size;
   const grades=active.filter(d=>d.total>=72).length;
   document.getElementById('stats').innerHTML=[
     [active.length,"Active opportunities"],["~"+totUnits.toLocaleString(),"Housing units in scope"],
-    [avg,"Avg opportunity score"],[bondHigh,"High bond-fit sites"],[grades,"Rated A- or better"]
+    [avg,"Avg opportunity score"],[states,"States covered"],[grades,"Rated A- or better"]
   ].map(c=>`<div class="stat"><div class="n">${c[0]}</div><div class="l">${c[1]}</div></div>`).join('');
 }
 
@@ -409,7 +472,7 @@ function getList(){
     if(ownerFilter&&d.owner!==ownerFilter)return false;
     if(bondFilter&&d.bondFit!==bondFilter)return false;
     if(region&&d.region!==region)return false;
-    if(q&&!(d.name+d.city+d.ownerDetail+d.type).toLowerCase().includes(q))return false;
+    if(q&&!(d.name+d.city+d.state+d.ownerDetail+d.type).toLowerCase().includes(q))return false;
     return true;
   });
   list.sort((a,b)=> sort==="name"?a.name.localeCompare(b.name): sort==="units"?(b.unitsN-a.unitsN): b.total-a.total);
@@ -425,48 +488,50 @@ function render(){
     const rank=sort==="score"?`<span style="font-size:11px;color:var(--muted);">#${i+1}</span> `:'';
     const bondCol=d.bondFit==="High"?"#3f7d20":d.bondFit==="Medium"?"#BF8F00":"#C00000";
     return `<div class="card" onclick="openModal('${d.id}')">
-      <div class="top"><div><div class="name">${rank}${d.name}</div><div class="loc">${d.city} · ${d.region}</div></div>
+      <div class="top"><div><div class="name">${rank}${d.name}</div><div class="loc">${d.city}, ${d.state} · ${d.region}</div></div>
         <div class="scorebadge"><span class="grade" style="background:${col}">${gr}</span>
           <div class="val">${d.total.toFixed(1)}</div><div class="small">/ 100</div></div></div>
       <div class="tags"><span class="tag ${ownerClass(d.owner)}">${d.ownerDetail}</span>
-        <span class="tag type">${d.type}</span>${d.transacted?'<span class="tag sold">Transacted comp</span>':''}</div>
-      <div class="bondfit"><span><span class="dot" style="background:${bondCol}"></span>Bond fit: <b>${d.bondFit}</b></span>
+        <span class="tag type">${d.type}</span>${d.transacted?'<span class="tag sold">Comp / delivered</span>':''}</div>
+      <div class="bondfit"><span><span class="dot" style="background:${bondCol}"></span>Policy fit: <b>${d.bondFit}</b></span>
         <span>Housing: <span class="units">${d.units}</span></span></div></div>`;
   }).join('');
   if(view==="map")renderMap(list);
 }
 
-/* ---------- map ---------- */
-const CA_BORDER=[[42.00,-124.21],[42.00,-120.00],[39.00,-120.00],[35.00,-114.63],[34.87,-114.63],
-[32.72,-114.50],[32.54,-117.12],[33.20,-117.38],[33.77,-118.19],[34.02,-118.50],[34.46,-120.47],
-[35.37,-120.90],[36.31,-121.90],[36.60,-121.89],[37.50,-122.51],[37.81,-122.52],[38.32,-123.05],
-[39.36,-123.82],[40.44,-124.41],[41.74,-124.20]];
-const MINLON=-124.7,MAXLON=-114.0,MINLAT=32.3,MAXLAT=42.2,MW=360,MH=560;
+/* ---------- US map ---------- */
+const US_BORDER=[[49.0,-123.0],[49.0,-95.0],[48.0,-89.5],[47.3,-90.5],[46.5,-84.5],[45.0,-83.0],
+[43.5,-82.5],[41.7,-82.9],[42.9,-78.9],[44.0,-76.5],[45.0,-74.7],[47.0,-69.2],[45.2,-67.0],
+[42.9,-70.8],[41.4,-71.4],[40.5,-74.0],[38.9,-75.0],[36.9,-76.0],[35.2,-75.5],[32.0,-80.8],
+[30.4,-81.4],[25.2,-80.3],[25.1,-81.2],[27.8,-82.8],[30.0,-84.0],[30.2,-88.0],[29.2,-90.0],
+[29.7,-93.8],[27.8,-97.0],[25.9,-97.4],[29.3,-100.9],[31.8,-106.5],[31.3,-111.0],[32.7,-114.7],
+[32.5,-117.1],[34.0,-118.5],[36.6,-121.9],[37.8,-122.5],[40.4,-124.4],[43.0,-124.4],[46.2,-124.0],[48.4,-124.7]];
+const MINLON=-125.5,MAXLON=-66.5,MINLAT=24.0,MAXLAT=49.8,MW=900,MH=470;
 function px(lon){return (lon-MINLON)/(MAXLON-MINLON)*MW;}
 function py(lat){return (MAXLAT-lat)/(MAXLAT-MINLAT)*MH;}
 
 function renderMap(list){
-  const poly=CA_BORDER.map(p=>`${px(p[1]).toFixed(1)},${py(p[0]).toFixed(1)}`).join(' ');
+  const poly=US_BORDER.map(p=>`${px(p[1]).toFixed(1)},${py(p[0]).toFixed(1)}`).join(' ');
   const ids=new Set(list.map(d=>d.id));
-  const markers=DATA.filter(d=>ids.has(d.id)).map(d=>{
+  const markers=DATA.filter(d=>ids.has(d.id)).sort((a,b)=>b.unitsN-a.unitsN).map(d=>{
     const [gr,col]=letter(d.total);
-    const r=5+Math.min(12,Math.sqrt(d.unitsN)/8);
+    const r=4+Math.min(11,Math.sqrt(d.unitsN)/9);
     return `<circle class="mk" cx="${px(d.lon).toFixed(1)}" cy="${py(d.lat).toFixed(1)}" r="${r.toFixed(1)}"
-      fill="${col}" fill-opacity="0.82" stroke="#fff" stroke-width="1.4"
+      fill="${col}" fill-opacity="0.82" stroke="#fff" stroke-width="1.3"
       onclick="openModal('${d.id}')"
-      onmousemove="showTip(event,'${d.name.replace(/'/g,"")} — ${gr} ${d.total.toFixed(1)}')"
+      onmousemove="showTip(event,'${d.name.replace(/'/g,"")} (${d.state}) — ${gr} ${d.total.toFixed(1)}')"
       onmouseout="hideTip()"></circle>`;
   }).join('');
   document.getElementById('mapcanvas').innerHTML=
     `<svg viewBox="0 0 ${MW} ${MH}" xmlns="http://www.w3.org/2000/svg">
-      <polygon class="calpoly" points="${poly}"></polygon>${markers}</svg>
+      <polygon class="uspoly" points="${poly}"></polygon>${markers}</svg>
      <div class="tipbox" id="tipbox"></div>`;
   const sorted=[...list].sort((a,b)=>b.total-a.total);
   document.getElementById('maplist').innerHTML=sorted.map(d=>{
     const [gr,col]=letter(d.total);
     return `<div class="maprow" onclick="openModal('${d.id}')">
       <div class="mg" style="background:${col}">${gr}</div>
-      <div><div class="mn">${d.name}</div><div class="ml">${d.city} · ${d.units} homes · ${d.ownerDetail}</div></div></div>`;
+      <div><div class="mn">${d.name}</div><div class="ml">${d.city}, ${d.state} · ${d.units} homes</div></div></div>`;
   }).join('');
 }
 function showTip(e,txt){const t=document.getElementById('tipbox');if(!t)return;
@@ -491,24 +556,24 @@ function openModal(id){
     return `<div class="srow"><span class="cat">${c}</span><span class="wt">${WEIGHTS[c]}%</span>
       <span class="barwrap"><span style="width:${sc}%;background:${barColor(sc)}"></span></span>
       <span class="sc">${sc}</span></div>`;}).join('');
-  const kv=[["Owner",d.ownerDetail],["Type",d.type],["Location",d.city+" · "+d.region],["Size",d.size],
+  const kv=[["Owner",d.ownerDetail],["Type",d.type],["Location",d.city+", "+d.state+" · "+d.region],["Size",d.size],
     ["Status",d.status],["Housing potential",d.units+" homes"],["Highest & best use",d.hbu]]
     .map(([k,v])=>`<div${k==="Highest & best use"?' style="grid-column:1/3"':''}><span class="k">${k}</span><span class="v">${v}</span></div>`).join('');
   document.getElementById('modal').innerHTML=`
     <div class="mhead"><span class="x" onclick="closeModal()">&times;</span>
-      <h2>${d.name}</h2><div class="mloc">${d.city} · ${d.region} · ${d.ownerDetail}</div>
+      <h2>${d.name}</h2><div class="mloc">${d.city}, ${d.state} · ${d.region} · ${d.ownerDetail}</div>
       <div class="mscore"><span class="gr" style="background:${col}">${gr}</span>
         <div><span class="big">${d.total.toFixed(1)}</span> <span style="opacity:.8;">/ 100 · Opportunity Score</span></div>
         <button class="jvbtn" onclick="openJV('${d.id}')">Build the JV →</button></div></div>
     <div class="mbody">
       <h3>Property profile</h3><div class="kv">${kv}</div>
       <h3>12-Category score breakdown</h3><div class="scoretbl">${rows}</div>
-      <h3>Bond fit — ${d.bondFit}</h3>
-      <div class="bondbox">Target programs under the 2026 housing bond:
+      <h3>Policy / program fit — ${d.bondFit}</h3>
+      <div class="bondbox">Target programs &amp; incentives:
         <div class="progs">${d.bondPrograms.map(p=>`<span class="prog">${p}</span>`).join('')}</div></div>
       <h3>Top value drivers</h3><ul class="lst">${d.highlights.map(h=>`<li>${h}</li>`).join('')}</ul>
       <h3>Key risks</h3><ul class="lst">${d.risks.map(r=>`<li>${r}</li>`).join('')}</ul>
-      <div class="note">Scores are illustrative analyst estimates demonstrating the R Squared methodology. Property facts from public sources (GSA, VA, CA DGS-HCD, LA Metro, city programs) as of June 2026. Not investment advice or an appraisal.</div>
+      <div class="note">Scores are illustrative analyst estimates demonstrating the R Squared methodology. Property facts from public sources (GSA, VA, BLM/SNPLMA, CA DGS-HCD, LA Metro, city programs) as of June 2026. Not investment advice or an appraisal.</div>
     </div>`;
   document.getElementById('overlay').classList.add('show');
 }
@@ -518,17 +583,15 @@ document.addEventListener('keydown',e=>{if(e.key==="Escape")closeModal();});
 /* ---------- JV deal-economics calculator ---------- */
 const fmt=n=>'$'+Math.round(n).toLocaleString();
 const fmtM=n=> (Math.abs(n)>=1e6)?('$'+(n/1e6).toFixed(2)+'M'):fmt(n);
-
 function jvDefaults(d){
   const units=d.unitsN||200;
   const conversion=/Office-to-residential/.test(d.type);
-  const tdcPerUnit=conversion?420:520;            // $k / unit
-  const acqM = d.id==="ziggurat"?177 : d.id==="menlo"?137 : Math.round(units*0.045); // $M
-  const tdcM = units*tdcPerUnit/1000;             // $M
+  const tdcPerUnit=conversion?420:520;
+  const acqM = d.id==="ziggurat"?177 : d.id==="menlo"?137 : d.id==="henderson"?0.002 : Math.round(units*0.045);
+  const tdcM = units*tdcPerUnit/1000;
   const profitM = +(tdcM*(conversion?0.12:0.10)).toFixed(1);
-  return {units,tdcPerUnit,acqM,profitM};
+  return {units,tdcPerUnit,acqM:Math.max(0,acqM),profitM};
 }
-
 function openJV(id){
   const d=DATA.find(x=>x.id===id);if(!d)return;
   const j=jvDefaults(d);
@@ -542,28 +605,28 @@ function openJV(id){
         <div class="jvcol">
           <h4>Project assumptions</h4>
           <div class="jvfield"><label>Housing units <b id="o_units">${j.units}</b></label>
-            <input type="range" id="i_units" min="50" max="4000" step="10" value="${j.units}" oninput="calcJV('${d.id}')"></div>
+            <input type="range" id="i_units" min="50" max="4000" step="10" value="${j.units}" oninput="calcJV()"></div>
           <div class="jvfield"><label>Total dev cost / unit ($k) <b id="o_tdcpu">${j.tdcPerUnit}</b></label>
-            <input type="range" id="i_tdcpu" min="250" max="800" step="10" value="${j.tdcPerUnit}" oninput="calcJV('${d.id}')"></div>
+            <input type="range" id="i_tdcpu" min="250" max="800" step="10" value="${j.tdcPerUnit}" oninput="calcJV()"></div>
           <div class="jvfield"><label>Acquisition / site control ($M) <b id="o_acq">${j.acqM}</b></label>
-            <input type="range" id="i_acq" min="1" max="300" step="1" value="${j.acqM}" oninput="calcJV('${d.id}')"></div>
+            <input type="range" id="i_acq" min="0" max="300" step="1" value="${Math.round(j.acqM)}" oninput="calcJV()"></div>
           <div class="jvfield"><label>Projected project profit ($M) <b id="o_profit">${j.profitM}</b></label>
-            <input type="range" id="i_profit" min="0" max="400" step="1" value="${j.profitM}" oninput="calcJV('${d.id}')"></div>
+            <input type="range" id="i_profit" min="0" max="400" step="1" value="${j.profitM}" oninput="calcJV()"></div>
         </div>
         <div class="jvcol">
           <h4>R Squared economics</h4>
           <div class="jvfield"><label>Acquisition fee (% of acq.) <b id="o_acqf">1.5%</b></label>
-            <input type="range" id="i_acqf" min="0" max="4" step="0.25" value="1.5" oninput="calcJV('${d.id}')"></div>
+            <input type="range" id="i_acqf" min="0" max="4" step="0.25" value="1.5" oninput="calcJV()"></div>
           <div class="jvfield"><label>Developer fee (% of TDC) <b id="o_devf">4%</b></label>
-            <input type="range" id="i_devf" min="0" max="6" step="0.25" value="4" oninput="calcJV('${d.id}')"></div>
+            <input type="range" id="i_devf" min="0" max="6" step="0.25" value="4" oninput="calcJV()"></div>
           <div class="jvfield"><label>R² share of developer fee <b id="o_devs">25%</b></label>
-            <input type="range" id="i_devs" min="0" max="100" step="5" value="25" oninput="calcJV('${d.id}')"></div>
+            <input type="range" id="i_devs" min="0" max="100" step="5" value="25" oninput="calcJV()"></div>
           <div class="jvfield"><label>Promote / carry on profit <b id="o_prom">15%</b></label>
-            <input type="range" id="i_prom" min="0" max="30" step="1" value="15" oninput="calcJV('${d.id}')"></div>
+            <input type="range" id="i_prom" min="0" max="30" step="1" value="15" oninput="calcJV()"></div>
           <div class="jvfield"><label>R² share of promote <b id="o_proms">30%</b></label>
-            <input type="range" id="i_proms" min="0" max="100" step="5" value="30" oninput="calcJV('${d.id}')"></div>
+            <input type="range" id="i_proms" min="0" max="100" step="5" value="30" oninput="calcJV()"></div>
           <div class="jvfield"><label>Sponsor / consulting fee ($k) <b id="o_spon">250</b></label>
-            <input type="range" id="i_spon" min="0" max="1500" step="25" value="250" oninput="calcJV('${d.id}')"></div>
+            <input type="range" id="i_spon" min="0" max="1500" step="25" value="250" oninput="calcJV()"></div>
         </div>
       </div>
       <div class="jvout" style="margin-top:6px;">
@@ -572,17 +635,15 @@ function openJV(id){
         <div class="pct" id="jv_pct"></div>
         <div class="jvbreak" id="jv_break"></div>
       </div>
-      <div class="note">Highly simplified, illustrative model of how R Squared could be compensated as the site-control and partner-assembly sponsor in a JV — not a pro forma, offer, or guarantee. Adjust the sliders to pressure-test scenarios. Total Development Cost (TDC), fees, promote and profit are placeholders for real underwriting.</div>
+      <div class="note">Highly simplified, illustrative model of how R Squared could be compensated as the site-control and partner-assembly sponsor in a JV — not a pro forma, offer, or guarantee. Adjust the sliders to pressure-test scenarios.</div>
     </div>`;
   document.getElementById('overlay').classList.add('show');
-  calcJV(id);
+  calcJV();
 }
-
-function calcJV(id){
+function calcJV(){
   const g=k=>parseFloat(document.getElementById(k).value);
   const units=g('i_units'), tdcpu=g('i_tdcpu'), acqM=g('i_acq'), profitM=g('i_profit');
   const acqf=g('i_acqf'), devf=g('i_devf'), devs=g('i_devs'), prom=g('i_prom'), proms=g('i_proms'), spon=g('i_spon');
-  // echo labels
   document.getElementById('o_units').textContent=units.toLocaleString();
   document.getElementById('o_tdcpu').textContent=tdcpu;
   document.getElementById('o_acq').textContent=acqM;
@@ -593,15 +654,9 @@ function calcJV(id){
   document.getElementById('o_prom').textContent=prom+'%';
   document.getElementById('o_proms').textContent=proms+'%';
   document.getElementById('o_spon').textContent=spon;
-  // economics ($)
-  const TDC=units*tdcpu*1000;
-  const acq=acqM*1e6, profit=profitM*1e6;
-  const acqFee=acq*acqf/100;
-  const devFeeTotal=TDC*devf/100;
-  const r2Dev=devFeeTotal*devs/100;
-  const promotePool=profit*prom/100;
-  const r2Prom=promotePool*proms/100;
-  const sponFee=spon*1000;
+  const TDC=units*tdcpu*1000, acq=acqM*1e6, profit=profitM*1e6;
+  const acqFee=acq*acqf/100, devFeeTotal=TDC*devf/100, r2Dev=devFeeTotal*devs/100;
+  const promotePool=profit*prom/100, r2Prom=promotePool*proms/100, sponFee=spon*1000;
   const total=acqFee+r2Dev+r2Prom+sponFee;
   document.getElementById('jv_total').textContent=fmtM(total);
   document.getElementById('jv_pct').textContent=`≈ ${(total/TDC*100).toFixed(2)}% of $${(TDC/1e6).toFixed(0)}M total development cost`;
