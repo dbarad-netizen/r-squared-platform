@@ -3,307 +3,402 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>R Squared — Public Asset Opportunity Intelligence Platform (National Demo)</title>
+<title>R Squared — Intelligence Platform for Public Land Development</title>
 <style>
-  :root{
-    --navy:#1F3864; --navy2:#2b4d86; --blue:#2E75B6; --light:#D9E2F3; --grey:#F4F6F9;
-    --green:#3f7d20; --amber:#BF8F00; --red:#C00000; --ink:#222831; --muted:#6b7480; --line:#dde2ea;
-  }
+  :root{--navy:#16284a;--navy2:#23406e;--blue:#2E75B6;--accent:#c8a24a;--light:#eaf0f8;--grey:#f5f7fa;
+    --green:#2f6b35;--amber:#9c7a13;--red:#b22020;--ink:#1f2630;--muted:#6b7480;--line:#e0e5ec;}
   *{box-sizing:border-box;}
-  body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;
-    color:var(--ink);background:#eceff4;line-height:1.45;font-size:14px;}
-  header{background:linear-gradient(135deg,var(--navy),var(--navy2));color:#fff;padding:20px 26px;}
-  .brand{display:flex;align-items:center;gap:13px;}
-  .logo{width:42px;height:42px;border-radius:9px;background:#fff;color:var(--navy);
-    font-weight:800;font-size:20px;display:flex;align-items:center;justify-content:center;letter-spacing:-1px;}
-  header h1{margin:0;font-size:19px;}
-  header .sub{opacity:.86;font-size:12.5px;margin-top:2px;}
-  .policybar{background:#13284a;color:#cfe0ff;font-size:12.5px;padding:9px 26px;border-top:1px solid #2c4571;display:flex;gap:18px;flex-wrap:wrap;}
-  .policybar b{color:#fff;}
-  .policybar .pill{background:#21487e;border-radius:20px;padding:2px 10px;font-size:11.5px;}
-  .container{max-width:1280px;margin:0 auto;padding:18px;}
-  .stats{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:16px;}
-  .stat{background:#fff;border:1px solid var(--line);border-radius:11px;padding:13px 15px;}
-  .stat .n{font-size:23px;font-weight:800;color:var(--navy);}
-  .stat .l{font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);margin-top:2px;}
-  .toolbar{background:#fff;border:1px solid var(--line);border-radius:11px;padding:12px 14px;
-    display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:14px;}
-  .toolbar input[type=text]{flex:1;min-width:170px;padding:9px 11px;border:1px solid var(--line);
-    border-radius:8px;font-family:inherit;font-size:13px;}
+  body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;color:var(--ink);
+    background:#fff;line-height:1.5;font-size:15px;}
+  a{color:var(--blue);text-decoration:none;cursor:pointer;}
+  .muted{color:var(--muted);}
+  /* nav */
+  nav{position:sticky;top:0;z-index:40;background:rgba(18,28,52,.97);backdrop-filter:blur(6px);
+    color:#fff;display:flex;align-items:center;gap:8px;padding:11px 22px;flex-wrap:wrap;}
+  nav .logo{width:34px;height:34px;border-radius:7px;background:#fff;color:var(--navy);font-weight:800;
+    display:flex;align-items:center;justify-content:center;font-size:16px;letter-spacing:-1px;}
+  nav .brandname{font-weight:700;font-size:15px;margin-right:8px;}
+  nav .navlink{color:#c9d6ea;font-size:13px;padding:6px 10px;border-radius:6px;cursor:pointer;}
+  nav .navlink:hover{background:rgba(255,255,255,.08);color:#fff;}
+  nav .navlink.on{color:#fff;background:rgba(255,255,255,.12);}
+  nav .spacer{flex:1;}
+  .tierbadge{font-size:11px;background:#21487e;border:1px solid #356;padding:5px 11px;border-radius:20px;color:#fff;cursor:pointer;}
+  .tierbadge b{color:var(--accent);}
+  /* layout */
+  .view{display:none;}
+  .view.on{display:block;}
+  .wrap{max-width:1180px;margin:0 auto;padding:0 22px;}
+  .section{padding:46px 0;}
+  .section.alt{background:var(--grey);}
+  h1,h2,h3{color:var(--navy);}
+  .eyebrow{text-transform:uppercase;letter-spacing:2px;font-size:12px;color:var(--accent);font-weight:700;margin-bottom:10px;}
+  /* hero */
+  .hero{background:linear-gradient(135deg,#13233f,#23406e 70%,#2c5088);color:#fff;padding:64px 0 54px;}
+  .hero h1{color:#fff;font-size:42px;line-height:1.12;margin:0 0 16px;max-width:780px;}
+  .hero p.lead{font-size:18px;color:#d7e2f2;max-width:680px;margin:0 0 26px;}
+  .hero .proto{font-size:13px;color:#a9c0e0;letter-spacing:.3px;}
+  .ctarow{display:flex;gap:12px;flex-wrap:wrap;margin-top:8px;}
+  .btn{display:inline-block;font-family:inherit;font-size:14.5px;font-weight:600;padding:13px 22px;border-radius:9px;
+    border:none;cursor:pointer;}
+  .btn.primary{background:var(--accent);color:#1c2436;}
+  .btn.ghost{background:rgba(255,255,255,.12);color:#fff;border:1px solid rgba(255,255,255,.3);}
+  .btn.solid{background:var(--navy);color:#fff;}
+  .btn.line{background:#fff;color:var(--navy);border:1px solid var(--navy);}
+  .btn:hover{filter:brightness(1.06);}
+  /* AI module */
+  .aibox{background:#fff;border-radius:14px;padding:20px;box-shadow:0 18px 50px rgba(0,0,0,.25);max-width:640px;margin-top:30px;}
+  .aibox h3{margin:0 0 4px;font-size:17px;}
+  .aibox .sub{font-size:13px;color:var(--muted);margin-bottom:12px;}
+  .aiform{display:flex;gap:8px;flex-wrap:wrap;}
+  .aiform input{flex:1;min-width:220px;padding:12px 13px;border:1px solid var(--line);border-radius:9px;font-family:inherit;font-size:14px;}
+  .airesult{margin-top:16px;display:none;}
+  .airesult.show{display:block;}
+  .aiscore{display:flex;align-items:center;gap:16px;background:var(--grey);border-radius:11px;padding:14px 16px;margin-bottom:12px;}
+  .aiscore .g{font-size:26px;font-weight:800;color:#fff;padding:5px 14px;border-radius:9px;}
+  .aiscore .v{font-size:30px;font-weight:800;color:var(--navy);}
+  .aigrid{display:grid;grid-template-columns:1fr 1fr;gap:10px 18px;font-size:13px;}
+  .aigrid .k{font-weight:700;color:var(--navy);display:block;font-size:11px;text-transform:uppercase;letter-spacing:.4px;}
+  .pulse{animation:pulse 1s ease;}
+  @keyframes pulse{0%{opacity:.3;}100%{opacity:1;}}
+  /* credibility band */
+  .credband{display:grid;grid-template-columns:repeat(6,1fr);gap:0;background:var(--navy);color:#fff;}
+  .credband .c{padding:20px 14px;text-align:center;border-right:1px solid rgba(255,255,255,.12);}
+  .credband .c:last-child{border-right:none;}
+  .credband .n{font-size:25px;font-weight:800;color:#fff;}
+  .credband .l{font-size:10.5px;text-transform:uppercase;letter-spacing:.6px;color:#9fb4d6;margin-top:3px;}
+  /* audience cards */
+  .aud{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;}
+  .audcard{background:#fff;border:1px solid var(--line);border-radius:13px;padding:20px;cursor:pointer;transition:.15s;}
+  .audcard:hover{box-shadow:0 8px 26px rgba(20,40,80,.12);transform:translateY(-3px);border-color:var(--blue);}
+  .audcard .ic{width:40px;height:40px;border-radius:9px;background:var(--light);color:var(--navy);display:flex;align-items:center;justify-content:center;font-weight:800;margin-bottom:12px;}
+  .audcard h4{margin:0 0 5px;font-size:16px;color:var(--navy);}
+  .audcard p{margin:0;font-size:13px;color:var(--muted);}
+  /* generic cards/grids */
+  .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
+  .card{background:#fff;border:1px solid var(--line);border-radius:13px;padding:20px;}
+  .card h4{margin:0 0 7px;font-size:16px;}
+  .card p{margin:0;font-size:13.5px;color:#444;}
+  .stepflow{display:flex;flex-wrap:wrap;gap:10px;align-items:center;font-size:13px;}
+  .stepflow .s{background:#fff;border:1px solid var(--line);border-radius:8px;padding:9px 13px;font-weight:600;color:var(--navy);}
+  .stepflow .ar{color:var(--accent);font-weight:800;}
+  /* opportunities */
+  .toolbar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:14px 0;}
+  .toolbar input[type=text]{flex:1;min-width:170px;padding:9px 11px;border:1px solid var(--line);border-radius:8px;font-family:inherit;font-size:13px;}
   .toolbar select{padding:9px 10px;border:1px solid var(--line);border-radius:8px;font-family:inherit;font-size:13px;background:#fff;}
   .viewtoggle{display:flex;border:1px solid var(--line);border-radius:8px;overflow:hidden;}
-  .viewtoggle button{border:none;background:#fff;padding:9px 16px;font-family:inherit;font-size:13px;font-weight:600;color:var(--muted);cursor:pointer;}
+  .viewtoggle button{border:none;background:#fff;padding:9px 15px;font-family:inherit;font-size:13px;font-weight:600;color:var(--muted);cursor:pointer;}
   .viewtoggle button.on{background:var(--navy);color:#fff;}
   .chiprow{display:flex;gap:6px;flex-wrap:wrap;}
-  .chip{font-size:12px;padding:6px 12px;border-radius:20px;border:1px solid var(--line);
-    background:#fff;cursor:pointer;color:var(--muted);user-select:none;}
+  .chip{font-size:12px;padding:6px 11px;border-radius:20px;border:1px solid var(--line);background:#fff;cursor:pointer;color:var(--muted);}
   .chip.active{background:var(--navy);color:#fff;border-color:var(--navy);}
-  .count{font-size:12.5px;color:var(--muted);margin:0 0 10px 2px;}
-  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(370px,1fr));gap:14px;}
-  .card{background:#fff;border:1px solid var(--line);border-radius:13px;overflow:hidden;
-    cursor:pointer;transition:box-shadow .15s,transform .15s;display:flex;flex-direction:column;}
-  .card:hover{box-shadow:0 6px 22px rgba(20,40,80,.13);transform:translateY(-2px);}
-  .card .top{display:flex;justify-content:space-between;padding:14px 15px 10px;gap:12px;}
-  .card .name{font-weight:700;font-size:15px;line-height:1.25;color:var(--navy);}
-  .card .loc{font-size:12px;color:var(--muted);margin-top:3px;}
-  .scorebadge{text-align:center;flex-shrink:0;}
-  .scorebadge .grade{font-size:13px;font-weight:800;color:#fff;border-radius:7px;padding:2px 8px;display:inline-block;}
-  .scorebadge .val{font-size:21px;font-weight:800;color:var(--navy);line-height:1.1;margin-top:4px;}
-  .scorebadge .small{font-size:10px;color:var(--muted);}
-  .tags{display:flex;flex-wrap:wrap;gap:6px;padding:0 15px 10px;}
-  .tag{font-size:10.5px;font-weight:600;padding:3px 8px;border-radius:6px;letter-spacing:.2px;}
-  .tag.fed{background:#e7eefb;color:#26477e;}
-  .tag.state{background:#e8f3ea;color:#2f6b35;}
-  .tag.local{background:#fef0e2;color:#9a5a17;}
-  .tag.priv{background:#f3ecf8;color:#6a3b8f;}
-  .tag.type{background:#eef1f5;color:#566;}
-  .tag.sold{background:#f6e4e4;color:#9a2b2b;}
-  .bondfit{padding:8px 15px;border-top:1px solid var(--line);font-size:12px;display:flex;
-    justify-content:space-between;align-items:center;background:var(--grey);margin-top:auto;}
+  .count{font-size:12.5px;color:var(--muted);margin:4px 2px 12px;}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));gap:14px;}
+  .ocard{background:#fff;border:1px solid var(--line);border-radius:13px;overflow:hidden;cursor:pointer;transition:.15s;display:flex;flex-direction:column;}
+  .ocard:hover{box-shadow:0 8px 24px rgba(20,40,80,.13);transform:translateY(-2px);}
+  .ocard .top{display:flex;justify-content:space-between;padding:14px 15px 8px;gap:12px;}
+  .ocard .rank{font-size:11px;color:var(--accent);font-weight:800;}
+  .ocard .name{font-weight:700;font-size:15px;color:var(--navy);line-height:1.25;}
+  .ocard .loc{font-size:12px;color:var(--muted);margin-top:3px;}
+  .badge{text-align:center;flex-shrink:0;}
+  .badge .grade{font-size:13px;font-weight:800;color:#fff;border-radius:7px;padding:2px 8px;display:inline-block;}
+  .badge .val{font-size:20px;font-weight:800;color:var(--navy);line-height:1.1;margin-top:3px;}
+  .badge .small{font-size:10px;color:var(--muted);}
+  .tags{display:flex;flex-wrap:wrap;gap:6px;padding:0 15px 8px;}
+  .tag{font-size:10.5px;font-weight:600;padding:3px 8px;border-radius:6px;}
+  .tag.fed{background:#e7eefb;color:#26477e;}.tag.state{background:#e8f3ea;color:#2f6b35;}
+  .tag.local{background:#fef0e2;color:#9a5a17;}.tag.priv{background:#f3ecf8;color:#6a3b8f;}
+  .tag.type{background:#eef1f5;color:#566;}.tag.sold{background:#f6e4e4;color:#9a2b2b;}
+  .ocard .foot{padding:9px 15px;border-top:1px solid var(--line);font-size:12px;display:flex;justify-content:space-between;align-items:center;background:var(--grey);margin-top:auto;}
   .dot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:5px;}
   .units{font-weight:700;color:var(--navy);}
+  .accesschip{font-size:10px;font-weight:700;padding:2px 7px;border-radius:5px;background:#eceff4;color:#566;}
   /* map */
   .mapwrap{display:none;background:#fff;border:1px solid var(--line);border-radius:13px;padding:12px;}
   .mapwrap.show{display:grid;grid-template-columns:1fr 300px;gap:10px;}
   .mapcanvas{position:relative;background:linear-gradient(180deg,#eaf1fb,#dfeaf6);border-radius:10px;overflow:hidden;}
   .mapcanvas svg{display:block;width:100%;height:auto;}
   .uspoly{fill:#f7faff;stroke:#9db4d4;stroke-width:1;}
-  .mk{cursor:pointer;transition:r .1s;}
-  .mk:hover{stroke:#111;stroke-width:2;}
+  .mk{cursor:pointer;}.mk:hover{stroke:#111;stroke-width:2;}
   .maplist{max-height:520px;overflow:auto;border-left:1px solid var(--line);padding-left:10px;}
   .maprow{display:flex;align-items:center;gap:10px;padding:7px 8px;border-radius:8px;cursor:pointer;}
   .maprow:hover{background:var(--grey);}
   .maprow .mg{width:30px;height:30px;border-radius:7px;color:#fff;font-weight:800;font-size:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
-  .maprow .mn{font-size:12.5px;font-weight:600;color:var(--navy);line-height:1.2;}
-  .maprow .ml{font-size:11px;color:var(--muted);}
+  .maprow .mn{font-size:12.5px;font-weight:600;color:var(--navy);line-height:1.2;}.maprow .ml{font-size:11px;color:var(--muted);}
   .maplegend{display:flex;gap:14px;flex-wrap:wrap;font-size:11.5px;color:var(--muted);padding:8px 4px 2px;grid-column:1/-1;}
   .maplegend span{display:flex;align-items:center;gap:5px;}
-  .tipbox{position:absolute;pointer-events:none;background:#13284a;color:#fff;font-size:11.5px;
-    padding:5px 9px;border-radius:6px;opacity:0;transition:opacity .1s;white-space:nowrap;transform:translate(-50%,-130%);z-index:5;}
+  .tipbox{position:absolute;pointer-events:none;background:#13284a;color:#fff;font-size:11.5px;padding:5px 9px;border-radius:6px;opacity:0;white-space:nowrap;transform:translate(-50%,-130%);z-index:5;}
   /* modal */
-  .overlay{position:fixed;inset:0;background:rgba(20,30,50,.55);display:none;align-items:flex-start;
-    justify-content:center;padding:30px 16px;overflow:auto;z-index:50;}
+  .overlay{position:fixed;inset:0;background:rgba(15,25,45,.6);display:none;align-items:flex-start;justify-content:center;padding:26px 14px;overflow:auto;z-index:60;}
   .overlay.show{display:flex;}
-  .modal{background:#fff;max-width:880px;width:100%;border-radius:15px;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.3);}
+  .modal{background:#fff;max-width:900px;width:100%;border-radius:15px;overflow:hidden;box-shadow:0 24px 70px rgba(0,0,0,.35);}
   .mhead{background:linear-gradient(135deg,var(--navy),var(--navy2));color:#fff;padding:20px 24px;position:relative;}
-  .mhead h2{margin:0;font-size:21px;padding-right:30px;}
+  .mhead h2{margin:0;font-size:21px;color:#fff;padding-right:30px;}
   .mhead .mloc{opacity:.85;font-size:13px;margin-top:4px;}
-  .mhead .x{position:absolute;top:16px;right:18px;font-size:24px;cursor:pointer;opacity:.8;line-height:1;}
-  .mhead .x:hover{opacity:1;}
-  .mscore{display:flex;gap:18px;align-items:center;margin-top:14px;flex-wrap:wrap;}
-  .mscore .big{font-size:40px;font-weight:800;line-height:1;}
-  .mscore .gr{font-size:22px;font-weight:800;padding:4px 14px;border-radius:9px;}
-  .jvbtn{margin-left:auto;background:#fff;color:var(--navy);border:none;font-weight:700;font-size:13.5px;
-    padding:11px 18px;border-radius:9px;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.18);}
-  .jvbtn:hover{filter:brightness(.96);}
+  .mhead .x{position:absolute;top:15px;right:18px;font-size:24px;cursor:pointer;opacity:.85;}
+  .mscore{display:flex;gap:16px;align-items:center;margin-top:14px;flex-wrap:wrap;}
+  .mscore .big{font-size:38px;font-weight:800;line-height:1;}
+  .mscore .gr{font-size:21px;font-weight:800;padding:4px 13px;border-radius:9px;}
+  .mtabs{display:flex;gap:2px;background:#eef1f6;padding:6px 10px 0;overflow-x:auto;}
+  .mtab{padding:9px 14px;font-size:12.5px;font-weight:600;color:var(--muted);cursor:pointer;border-radius:8px 8px 0 0;white-space:nowrap;}
+  .mtab.on{background:#fff;color:var(--navy);}
+  .mlock{font-size:10px;}
   .mbody{padding:20px 24px;}
-  .mbody h3{font-size:12px;text-transform:uppercase;letter-spacing:.6px;color:var(--blue);
-    margin:20px 0 9px;border-bottom:1px solid var(--line);padding-bottom:5px;}
+  .mbody h3{font-size:12px;text-transform:uppercase;letter-spacing:.5px;color:var(--blue);margin:18px 0 8px;border-bottom:1px solid var(--line);padding-bottom:5px;}
   .mbody h3:first-child{margin-top:0;}
   .kv{display:grid;grid-template-columns:1fr 1fr;gap:6px 22px;font-size:13px;}
   .kv div{display:flex;justify-content:space-between;gap:10px;border-bottom:1px dashed #e7ebf1;padding:4px 0;}
-  .kv .k{color:var(--muted);}
-  .kv .v{font-weight:600;text-align:right;}
-  .scoretbl{font-size:12.5px;}
-  .srow{display:grid;grid-template-columns:150px 42px 1fr 50px;gap:10px;align-items:center;padding:4px 0;}
-  .srow .cat{color:#333;}
-  .srow .wt{color:var(--muted);font-size:11px;text-align:right;}
+  .kv .k{color:var(--muted);}.kv .v{font-weight:600;text-align:right;}
+  ul.lst{margin:6px 0 0;padding-left:18px;font-size:13.5px;}ul.lst li{margin-bottom:4px;}
+  .srow{display:grid;grid-template-columns:160px 40px 1fr 44px;gap:10px;align-items:center;padding:4px 0;font-size:12.5px;}
   .srow .barwrap{height:9px;background:#eaeef4;border-radius:5px;overflow:hidden;}
-  .srow .barwrap > span{display:block;height:100%;border-radius:5px;}
+  .srow .barwrap>span{display:block;height:100%;}
   .srow .sc{font-weight:700;text-align:right;color:var(--navy);}
-  .bondbox{background:var(--grey);border:1px solid var(--line);border-radius:10px;padding:12px 14px;}
-  .progs{display:flex;flex-wrap:wrap;gap:7px;margin-top:8px;}
+  .progs{display:flex;flex-wrap:wrap;gap:7px;margin-top:6px;}
   .prog{font-size:11.5px;background:#e7eefb;color:#26477e;padding:4px 9px;border-radius:6px;font-weight:600;}
-  ul.lst{margin:6px 0 0;padding-left:18px;}
-  ul.lst li{margin-bottom:4px;}
-  .note{font-size:11.5px;color:var(--muted);margin-top:18px;border-top:1px solid var(--line);padding-top:10px;}
-  /* JV calculator */
-  .jvgrid{display:grid;grid-template-columns:1fr 1fr;gap:22px;}
-  .jvcol h4{font-size:12px;text-transform:uppercase;letter-spacing:.5px;color:var(--blue);margin:0 0 10px;}
-  .jvfield{margin-bottom:12px;}
-  .jvfield label{display:flex;justify-content:space-between;font-size:12.5px;margin-bottom:4px;color:#444;}
-  .jvfield label b{color:var(--navy);}
-  .jvfield input[type=range]{width:100%;}
-  .jvout{background:linear-gradient(135deg,#eef4fc,#e3edf9);border:1px solid #cfdcef;border-radius:12px;padding:16px 18px;}
-  .jvout .lead{font-size:12px;text-transform:uppercase;letter-spacing:.6px;color:var(--muted);}
-  .jvout .total{font-size:34px;font-weight:800;color:var(--navy);line-height:1.1;margin:2px 0 2px;}
-  .jvout .pct{font-size:12.5px;color:var(--green);font-weight:700;}
-  .jvbreak{margin-top:12px;font-size:12.5px;}
-  .jvbreak .r{display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px dashed #d6e0ee;}
-  .jvbreak .r b{color:var(--navy);}
-  .backbtn{background:none;border:none;color:var(--blue);font-weight:700;cursor:pointer;font-size:13px;padding:0;margin-bottom:4px;}
-  footer{max-width:1280px;margin:8px auto 36px;padding:0 18px;font-size:11.5px;color:var(--muted);}
-  @media(max-width:860px){.stats{grid-template-columns:repeat(2,1fr);}.kv,.jvgrid{grid-template-columns:1fr;}.mapwrap.show{grid-template-columns:1fr;}.srow{grid-template-columns:120px 34px 1fr 42px;}}
+  .advbox{background:linear-gradient(135deg,#f6f0e0,#efe6cf);border:1px solid #e3d3a6;border-radius:11px;padding:14px 16px;}
+  .advbox h4{margin:0 0 8px;color:#8a6d1e;font-size:13px;text-transform:uppercase;letter-spacing:.5px;}
+  .rangebar{display:flex;justify-content:space-between;text-align:center;background:var(--grey);border-radius:10px;padding:12px;margin:8px 0;}
+  .rangebar .b .n{font-size:18px;font-weight:800;color:var(--navy);}
+  .rangebar .b .l{font-size:10.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;}
+  .pill2{display:inline-block;font-size:11.5px;font-weight:700;padding:4px 11px;border-radius:20px;}
+  .gapgrid{display:grid;grid-template-columns:1fr 1fr;gap:4px 16px;font-size:13px;}
+  .gapgrid .ok{color:var(--green);font-weight:600;}
+  .gapgrid .no{color:var(--red);font-weight:700;}
+  /* lock overlay */
+  .locked{position:relative;}
+  .lockmsg{background:linear-gradient(180deg,rgba(255,255,255,0),#fff 40%);text-align:center;padding:24px 16px 8px;margin-top:-40px;position:relative;}
+  .lockmsg .ic{font-size:22px;}
+  .lockmsg h4{margin:6px 0 4px;color:var(--navy);}
+  .lockmsg p{font-size:13px;color:var(--muted);margin:0 0 12px;}
+  .reportwrap .rh{font-size:13px;font-weight:700;color:var(--navy);margin:2px 0 8px;}
+  .reporttabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px;}
+  .rtab{font-size:11.5px;font-weight:600;padding:6px 11px;border-radius:7px;background:#eef1f6;color:#566;cursor:pointer;}
+  .rtab.on{background:var(--navy);color:#fff;}
+  /* footer */
+  footer{background:var(--navy);color:#b9c7df;font-size:12px;padding:26px 0;margin-top:10px;}
+  footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;}
+  /* modal tier note */
+  .signrow{display:flex;gap:8px;flex-wrap:wrap;align-items:center;font-size:12.5px;margin-top:6px;}
+  .note{font-size:11.5px;color:var(--muted);margin-top:16px;border-top:1px solid var(--line);padding-top:9px;}
+  @media(max-width:880px){.credband{grid-template-columns:repeat(3,1fr);}.aud{grid-template-columns:1fr 1fr;}
+    .grid3{grid-template-columns:1fr;}.kv,.gapgrid,.aigrid{grid-template-columns:1fr;}.mapwrap.show{grid-template-columns:1fr;}
+    .hero h1{font-size:32px;}.srow{grid-template-columns:120px 34px 1fr 40px;}}
 </style>
 </head>
 <body>
 <!--
-  ============================================================================
-  R SQUARED — PUBLIC ASSET OPPORTUNITY INTELLIGENCE PLATFORM (National demo)
-  PLAIN-TEXT SUMMARY FOR AI/LLM REVIEWERS:
-  This is a single-file web app whose interactive content is rendered by
-  JavaScript. The full human-readable content (concept, methodology, all 24
-  scored properties, and the questions we want feedback on) is reproduced in
-  the <noscript> block immediately below so it can be read directly from the
-  file source without executing JavaScript. A fuller companion document,
-  "R_Squared_Platform_Strategy_and_Spec", contains the complete strategy.
-  ============================================================================
+  R SQUARED — INTELLIGENCE PLATFORM FOR PUBLIC LAND DEVELOPMENT (demo v3)
+  PLAIN-TEXT SUMMARY FOR AI/LLM REVIEWERS: This single-file app renders via JavaScript.
+  The full readable content (concept, methodology, all 24 scored opportunities, and feedback
+  questions) is in the <noscript> block below. Compensation/economics live behind an Admin login
+  (demo password: r2admin) and are intentionally NOT in the public workflow.
 -->
 <noscript>
-<div style="max-width:820px;margin:20px auto;font-family:Arial,sans-serif;color:#222;line-height:1.5;">
-  <h1 style="color:#1F3864;">R Squared — Public Asset Opportunity Intelligence Platform</h1>
-  <p><b>What it is:</b> an independent intelligence layer that scores publicly owned and underused U.S.
-  real estate (surplus federal property from GSA/VA/BLM, state and local surplus land, and convertible
-  private office buildings) for housing-redevelopment potential. Each property is run through a
-  standardized 12-category protocol and assigned a weighted 0&ndash;100 "R Squared Opportunity Score"
-  with an A+&ndash;D grade, so opportunities anywhere in the country are comparable.</p>
-
-  <p><b>Why now &mdash; two policy tailwinds:</b> (1) Federal &mdash; the 21st Century ROAD to Housing Act
-  passed Congress June 2026 with veto-proof bipartisan majorities (Senate 85&ndash;5, House 358&ndash;32),
-  awaiting signature; it streamlines NEPA reviews, prioritizes Opportunity Zones, funds vacant-building
-  conversions (RESIDE Act), and mandates public-land databases &mdash; with no new spending.
-  (2) California &mdash; the $11.25B Veterans &amp; Affordable Housing Bond on the Nov 2026 ballot.
-  Plus an active federal disposition wave (GSA selling "non-core" assets) and BLM selling federal land
-  for $100/acre for affordable housing.</p>
-
-  <p><b>The business wedge:</b> don't chase grant/bond dollars directly &mdash; control underused sites and
-  assemble qualified affordable-housing partners before the money moves, then earn fees + promote as the
-  joint-venture sponsor (site control, relationships, deal vision, local execution).</p>
-
-  <h2 style="color:#1F3864;">Scoring model (12 categories &amp; weights)</h2>
-  <p>Market Demand 15% &middot; Financial Return 20% &middot; Entitlement Risk 10% &middot; Environmental Risk 10%
-  &middot; Public Benefit 10% &middot; Housing Potential 10% &middot; Acquisition Complexity 5% &middot;
-  Political Feasibility 5% &middot; Infrastructure 5% &middot; Financing Availability 5% &middot; Strategic Importance 5%.
-  Grades: A+ &ge;85, A 78&ndash;84, A- 72&ndash;77, B+ 66&ndash;71, B 60&ndash;65, B- 54&ndash;59, C+ 48&ndash;53, C 40&ndash;47, D &lt;40.</p>
-
-  <h2 style="color:#1F3864;">The 24 scored opportunities (7 states; "(comp)" = already transacted)</h2>
-  <table border="1" cellspacing="0" cellpadding="4" style="border-collapse:collapse;font-size:12px;width:100%;">
-    <tr style="background:#1F3864;color:#fff;"><th>#</th><th>Property</th><th>Location</th><th>Owner</th><th>Type</th><th>Units</th><th>Score</th><th>Grade</th><th>Policy fit</th></tr>
-    <tr><td>1</td><td>Former Pfizer HQ (219–235 E 42nd St)</td><td>New York (Midtown East), NY</td><td>Private</td><td>Office-to-residential</td><td>~1,600</td><td>81.0</td><td>A</td><td>High</td></tr>
-    <tr><td>2</td><td>District NoHo — North Hollywood Station</td><td>North Hollywood, CA</td><td>Local</td><td>Transit-oriented mixed-use</td><td>~1,500</td><td>79.3</td><td>A</td><td>High</td></tr>
-    <tr><td>3</td><td>25 Water Street (SoMA, FiDi) (comp)</td><td>New York (FiDi), NY</td><td>Private</td><td>Office-to-residential</td><td>1,320</td><td>78.8</td><td>A</td><td>Medium</td></tr>
-    <tr><td>4</td><td>L.A. Care Tower, 1055 W. 7th Street</td><td>Los Angeles (DTLA), CA</td><td>Private</td><td>Office-to-residential</td><td>686</td><td>77.4</td><td>A-</td><td>Medium</td></tr>
-    <tr><td>5</td><td>CityView Plaza (office-to-residential)</td><td>San Jose (Downtown), CA</td><td>Private</td><td>Office-to-residential</td><td>680</td><td>76.6</td><td>A-</td><td>Medium</td></tr>
-    <tr><td>6</td><td>Underutilized State Property — Riverside</td><td>Riverside, CA</td><td>State</td><td>Surplus state land → affordable</td><td>209</td><td>76.5</td><td>A-</td><td>High</td></tr>
-    <tr><td>7</td><td>West Henderson Affordable Housing (BLM land)</td><td>Henderson, NV</td><td>Federal</td><td>Federal land → affordable</td><td>~300</td><td>76.3</td><td>A-</td><td>High</td></tr>
-    <tr><td>8</td><td>Wilshire / La Brea Station (D Line)</td><td>Los Angeles (Mid-Wilshire), CA</td><td>Local</td><td>Transit-oriented housing</td><td>~250</td><td>76.2</td><td>A-</td><td>High</td></tr>
-    <tr><td>9</td><td>Lake Balboa / Victory Station (G Line)</td><td>Lake Balboa, LA, CA</td><td>Local</td><td>Transit-oriented affordable</td><td>321</td><td>76.0</td><td>A-</td><td>High</td></tr>
-    <tr><td>10</td><td>Fairview Heights Station (K Line)</td><td>Inglewood, CA</td><td>Local</td><td>Transit-oriented housing</td><td>~200</td><td>75.1</td><td>A-</td><td>High</td></tr>
-    <tr><td>11</td><td>30 N. LaSalle Street (Loop conversion)</td><td>Chicago (The Loop), IL</td><td>Private</td><td>Office-to-residential</td><td>349</td><td>74.4</td><td>A-</td><td>High</td></tr>
-    <tr><td>12</td><td>Rockaway Grove (former USGS Campus) (comp)</td><td>Menlo Park, CA</td><td>Federal</td><td>Federal campus → redevelopment</td><td>~1,000</td><td>72.8</td><td>A-</td><td>Medium</td></tr>
-    <tr><td>13</td><td>West LA VA — North Campus (Veteran Housing)</td><td>Los Angeles (West LA), CA</td><td>Federal</td><td>Veteran supportive housing</td><td>~1,800</td><td>72.7</td><td>A-</td><td>High</td></tr>
-    <tr><td>14</td><td>Surplus State Site — Napa</td><td>Napa, CA</td><td>State</td><td>Surplus state land → affordable</td><td>~200</td><td>71.5</td><td>B+</td><td>High</td></tr>
-    <tr><td>15</td><td>Former DMV Site — Stockton</td><td>Stockton, CA</td><td>State</td><td>Surplus state land → affordable</td><td>~250</td><td>71.0</td><td>B+</td><td>High</td></tr>
-    <tr><td>16</td><td>Former State Hospital Land — Fontana</td><td>Fontana / San Bernardino, CA</td><td>State</td><td>Surplus state land → affordable</td><td>~300</td><td>69.8</td><td>B+</td><td>High</td></tr>
-    <tr><td>17</td><td>Alameda Point (former NAS Alameda)</td><td>Alameda, CA</td><td>Local</td><td>Former base → master-planned</td><td>~2,000</td><td>69.3</td><td>B+</td><td>Medium</td></tr>
-    <tr><td>18</td><td>Chet Holifield Federal Building (“The Ziggurat”)</td><td>Laguna Niguel, CA</td><td>Federal</td><td>Gov office → mixed-use</td><td>2,000–4,000</td><td>69.2</td><td>B+</td><td>High</td></tr>
-    <tr><td>19</td><td>50 United Nations Plaza (Federal Building)</td><td>San Francisco (Civic Center), CA</td><td>Federal</td><td>Federal office → conversion</td><td>~500</td><td>68.3</td><td>B+</td><td>Medium</td></tr>
-    <tr><td>20</td><td>Peachtree Summit Federal Building</td><td>Atlanta, GA</td><td>Federal</td><td>Federal office → conversion</td><td>~350</td><td>67.8</td><td>B+</td><td>Medium</td></tr>
-    <tr><td>21</td><td>USDA Headquarters (Whitten Bldg watch)</td><td>Washington, D.C., DC</td><td>Federal</td><td>Federal office → redevelopment</td><td>~400</td><td>66.2</td><td>B+</td><td>Medium</td></tr>
-    <tr><td>22</td><td>Speaker Nancy Pelosi Federal Building (SoMa)</td><td>San Francisco (SoMa), CA</td><td>Federal</td><td>Federal office → conversion</td><td>~600</td><td>64.0</td><td>B</td><td>Medium</td></tr>
-    <tr><td>23</td><td>1000 Broadway (office-to-residential)</td><td>Oakland (Downtown), CA</td><td>Private</td><td>Office-to-residential</td><td>~100</td><td>64.0</td><td>B</td><td>Low–Med</td></tr>
-    <tr><td>24</td><td>Federal Property — Battle Creek</td><td>Battle Creek, MI</td><td>Federal</td><td>Federal property → redevelopment</td><td>~150</td><td>61.5</td><td>B</td><td>Low–Med</td></tr>
-  </table>
-
-  <h2 style="color:#1F3864;">Features in the live app</h2>
-  <p>Ranked list and U.S. map views; filters by region/owner/policy-fit; per-property detail with the
-  12-category breakdown, policy/program fit, value drivers and risks; and a "Build the JV" calculator
-  that models R Squared's compensation (acquisition fee, developer-fee share, promote, sponsor fee) as
-  the JV sponsor.</p>
-
-  <h2 style="color:#1F3864;">Questions we want feedback on</h2>
-  <ol>
-    <li>Is "independent intelligence + JV sponsor (site control + partner assembly)" the right wedge?</li>
-    <li>Is the methodology+brand a real moat vs. CoStar/brokerages? What strengthens it?</li>
-    <li>Which revenue line should lead: research/subscriptions, advisory, or JV promote?</li>
-    <li>Right breadth: national (7 states) vs. go deep on one market first?</li>
-    <li>Are the 12 categories &amp; weights sensible? What's missing (climate/insurance, construction-cost risk)?</li>
-    <li>How much to lean on the ROAD Act (no new money) vs. the CA bond (real money, CA-only) vs. the disposition wave?</li>
-    <li>Biggest blind spot — what is this plan getting wrong?</li>
-  </ol>
-  <p style="font-size:12px;color:#666;">All scores are illustrative analyst estimates for demonstration — not investment advice or appraisals. Facts from public sources as of June 2026.</p>
+<div style="max-width:820px;margin:20px auto;font-family:Arial,sans-serif;color:#222;">
+  <h1>R Squared — Intelligence Platform for Public Land Development</h1>
+  <p>We identify the top public-owned surplus land opportunities in the U.S. and rank them by housing
+  redevelopment potential, scored with a standardized 12-category protocol — then assemble the team to
+  execute. Positioning: not a developer or broker, but the orchestrator that brings together opportunities,
+  institutional-grade intelligence, and the right partners. Compensation/JV economics are gated behind an
+  internal Admin portal, not the public site. Membership tiers: Free (teaser), Professional (full analysis),
+  Partner (financials, capital stack, partner reports, introductions). Audiences: Developers, Investors,
+  Land Owners, Public Agencies.</p>
+  <p>Per opportunity the platform provides: Opportunity Score &amp; grade, R Squared Advantage summary,
+  estimated acquisition range, acquisition difficulty score, government motivation score, capital stack
+  snapshot, offer recommendation, deal-readiness index, partner-gap analysis, and five partner reports
+  (Developer Playbook, Operations Readiness, Support Services Assessment, Capital Strategy, Entitlement Roadmap).</p>
+  <p>24 real scored opportunities across CA, NY, IL, NV, GA, MI, DC (illustrative analyst estimates; public
+  sources as of June 2026). Top: Former Pfizer HQ NYC (A, 81), District NoHo (A, 79), 25 Water St NYC comp (A, 79).</p>
 </div>
 </noscript>
-<header>
-  <div class="brand">
-    <div class="logo">R²</div>
-    <div>
-      <h1>Public Asset Opportunity Intelligence Platform</h1>
-      <div class="sub">National demonstration · Surplus public &amp; underused property across the U.S., scored for housing redevelopment</div>
+
+<nav id="nav">
+  <div class="logo">R²</div><div class="brandname">R Squared</div>
+  <span class="navlink" data-v="home" onclick="go('home')">Home</span>
+  <span class="navlink" data-v="who" onclick="go('who')">Who We Are</span>
+  <span class="navlink" data-v="how" onclick="go('how')">How We Work</span>
+  <span class="navlink" data-v="opps" onclick="go('opps')">Opportunities</span>
+  <span class="navlink" data-v="why" onclick="go('why')">Why R Squared</span>
+  <span class="navlink" data-v="partner" onclick="go('partner')">Partner With Us</span>
+  <span class="spacer"></span>
+  <span class="tierbadge" onclick="cycleTier()">Access: <b id="tierlabel">Free</b></span>
+  <span class="navlink" data-v="admin" onclick="go('admin')">Admin</span>
+</nav>
+
+<!-- ============ HOME ============ -->
+<div class="view on" id="v-home">
+  <div class="hero"><div class="wrap">
+    <div class="eyebrow" style="color:var(--accent)">Decision intelligence for public land development</div>
+    <h1>We identify the country's best public-owned surplus land — and assemble the team to build it.</h1>
+    <p class="lead">R Squared ranks public and underused real estate by housing-redevelopment potential, scored with a standardized 12-category protocol, then connects the developers, capital, and experts to move projects from surplus land to delivered housing.</p>
+    <div class="ctarow">
+      <button class="btn primary" onclick="go('opps')">View opportunities</button>
+      <button class="btn ghost" onclick="go('how')">How we work</button>
     </div>
-  </div>
-</header>
-<div class="policybar">
-  <span><b>Two policy tailwinds:</b></span>
-  <span class="pill">Federal: 21st Century ROAD to Housing Act (passed Congress, June 2026 — streamlines NEPA, OZ priority, RESIDE conversions, public-land database)</span>
-  <span class="pill">California: Veterans &amp; Affordable Housing Bond — $11.25B, Nov 2026 ballot</span>
+    <div class="aibox">
+      <h3>Upload an address. Get an institutional feasibility review in minutes.</h3>
+      <div class="sub">Zoning · financial feasibility · incentives · risks · highest &amp; best use · recommended partners</div>
+      <div class="aiform">
+        <input type="text" id="aiInput" placeholder="e.g. 24000 Avila Road, Laguna Niguel, CA — or any address">
+        <button class="btn solid" onclick="runAI()">Analyze</button>
+      </div>
+      <div class="airesult" id="aiResult"></div>
+      <div class="proto" style="margin-top:10px;color:#98a6bb;font-size:11.5px;">Demo generates an illustrative review from the R Squared protocol. Try a sample: <a onclick="document.getElementById('aiInput').value='Pfizer HQ, New York';runAI();">Pfizer HQ, NYC</a> · <a onclick="document.getElementById('aiInput').value='Ziggurat, Laguna Niguel';runAI();">The Ziggurat, CA</a></div>
+    </div>
+  </div></div>
+
+  <div class="credband" id="credband"></div>
+
+  <div class="section"><div class="wrap">
+    <div class="eyebrow">Who we serve</div>
+    <h2 style="margin-top:0;">Four ways in. One platform.</h2>
+    <div class="aud">
+      <div class="audcard" onclick="setAudience('Developers')"><div class="ic">D</div><h4>Developers</h4><p>"I already have a site." Get institutional feasibility and the partners to execute.</p></div>
+      <div class="audcard" onclick="setAudience('Investors')"><div class="ic">I</div><h4>Investors</h4><p>"I need opportunities." Ranked, risk-graded public-land deal flow.</p></div>
+      <div class="audcard" onclick="setAudience('Land Owners')"><div class="ic">L</div><h4>Land Owners</h4><p>"I want to maximize my property's value." Highest &amp; best use, fast.</p></div>
+      <div class="audcard" onclick="setAudience('Public Agencies')"><div class="ic">P</div><h4>Public Agencies</h4><p>"I have land that needs development." Attract qualified, mission-aligned teams.</p></div>
+    </div>
+  </div></div>
+
+  <div class="section alt"><div class="wrap">
+    <div class="eyebrow">The product</div>
+    <h2 style="margin-top:0;max-width:760px;">The Top 100 Public Asset Housing Opportunities — ranked, scored, and decision-ready.</h2>
+    <p class="muted" style="max-width:720px;">Every opportunity is scored 0–100 on a standardized 12-category redevelopment protocol, graded A+ to D, and paired with the partner stack required to execute.</p>
+    <button class="btn solid" onclick="go('opps')">Explore the rankings →</button>
+  </div></div>
 </div>
 
-<div class="container">
-  <div class="stats" id="stats"></div>
-
-  <div class="toolbar">
-    <input type="text" id="search" placeholder="Search by name, city, state, or owner…" oninput="render()">
-    <select id="sort" onchange="render()">
-      <option value="score">Sort: Opportunity Score</option>
-      <option value="units">Sort: Housing potential</option>
-      <option value="name">Sort: Name (A–Z)</option>
-    </select>
-    <select id="region" onchange="render()">
-      <option value="">All regions</option>
-      <option>California</option><option>West</option><option>Midwest</option><option>South</option><option>Northeast</option>
-    </select>
-    <div class="viewtoggle">
-      <button id="vList" class="on" onclick="setView('list')">List</button>
-      <button id="vMap" onclick="setView('map')">Map</button>
+<!-- ============ WHO WE ARE ============ -->
+<div class="view" id="v-who">
+  <div class="section"><div class="wrap" style="max-width:820px;">
+    <div class="eyebrow">Who we are</div>
+    <h1 style="font-size:32px;">An intelligence platform, not another developer.</h1>
+    <p style="font-size:17px;">R Squared identifies overlooked public real-estate opportunities, evaluates them with institutional-quality analysis, and assembles the right partners to move projects from concept to execution.</p>
+    <div class="grid3" style="margin-top:24px;">
+      <div class="card"><h4>Independent</h4><p>We represent the opportunity and the team — not a single seller. Our rankings are comparable across the country.</p></div>
+      <div class="card"><h4>Analytical</h4><p>A standardized 12-category protocol turns scattered public data into decision-grade intelligence.</p></div>
+      <div class="card"><h4>Connective</h4><p>We assemble developers, capital, and experts — the orchestrator that makes hard public-land deals happen.</p></div>
     </div>
-  </div>
-  <div class="toolbar" style="margin-top:-6px;">
-    <span style="font-size:12px;color:var(--muted);">Owner:</span>
-    <div class="chiprow" id="ownerChips"></div>
-    <span style="font-size:12px;color:var(--muted);margin-left:8px;">Policy fit:</span>
-    <div class="chiprow" id="bondChips"></div>
-  </div>
-
-  <div class="count" id="count"></div>
-  <div class="grid" id="grid"></div>
-
-  <div class="mapwrap" id="mapwrap">
-    <div class="mapcanvas" id="mapcanvas"></div>
-    <div class="maplist" id="maplist"></div>
-    <div class="maplegend">
-      <span><span class="dot" style="background:#2f6b35"></span>A / A- (72+)</span>
-      <span><span class="dot" style="background:#6f8b1e"></span>B+ (66–71)</span>
-      <span><span class="dot" style="background:#BF8F00"></span>B (60–65)</span>
-      <span>Marker size = housing potential</span>
-    </div>
-  </div>
+  </div></div>
 </div>
 
-<div class="overlay" id="overlay" onclick="if(event.target===this)closeModal()">
-  <div class="modal" id="modal"></div>
+<!-- ============ HOW WE WORK ============ -->
+<div class="view" id="v-how">
+  <div class="section"><div class="wrap">
+    <div class="eyebrow">How we work</div>
+    <h1 style="font-size:32px;margin-top:0;">We build the team that develops successful projects.</h1>
+    <div class="stepflow" style="margin:18px 0 28px;">
+      <span class="s">Identify</span><span class="ar">→</span><span class="s">Score</span><span class="ar">→</span>
+      <span class="s">Structure</span><span class="ar">→</span><span class="s">Assemble partners</span><span class="ar">→</span><span class="s">Execute</span>
+    </div>
+    <h3>The R Squared partner stack</h3>
+    <div class="grid3">
+      <div class="card"><h4>Build &amp; finance</h4><p>Affordable-housing developers (LIHTC), capital partners, public-finance consultants, tax-credit experts, general contractors.</p></div>
+      <div class="card"><h4>Design &amp; entitle</h4><p>Architects, civil engineers, land-use &amp; entitlement attorneys, environmental consultants.</p></div>
+      <div class="card"><h4>Operate &amp; serve</h4><p>Nonprofit operators, veteran &amp; supportive-services providers, property managers, government agencies.</p></div>
+    </div>
+    <p class="muted" style="margin-top:18px;">For every opportunity, R Squared shows the full execution team — and flags exactly which partners are still needed.</p>
+  </div></div>
 </div>
 
-<footer>
-  <b>About this demo.</b> Property facts (owner, location, size, status, redevelopment context) are drawn from public sources as of June 2026 — GSA disposition notices, the VA West LA campus program, BLM / SNPLMA federal-land-for-housing actions, the 21st Century ROAD to Housing Act, California’s Excess Sites &amp; Surplus Land Act, LA Metro Joint Development, and city office-conversion programs (NYC 467-m, Chicago LaSalle, LA/SF). The 12-category scores, the R Squared Opportunity Score, and the JV deal economics are <b>illustrative analyst estimates</b> demonstrating the methodology, not investment advice, appraisals, or guarantees. All data is local to this browser tab.
-</footer>
+<!-- ============ OPPORTUNITIES ============ -->
+<div class="view" id="v-opps">
+  <div class="section"><div class="wrap">
+    <div class="eyebrow">Current opportunities</div>
+    <h1 style="font-size:30px;margin:0 0 4px;">Top 100 Public Asset Housing Opportunities</h1>
+    <p class="muted" style="margin:0 0 8px;">Scored using a standardized 12-category redevelopment protocol. <span id="audctx"></span></p>
+    <div class="toolbar">
+      <input type="text" id="search" placeholder="Search name, city, state, owner…" oninput="renderOpps()">
+      <select id="sort" onchange="renderOpps()"><option value="score">Sort: Opportunity Score</option><option value="units">Sort: Housing potential</option><option value="name">Sort: Name</option></select>
+      <select id="region" onchange="renderOpps()"><option value="">All regions</option><option>California</option><option>West</option><option>Midwest</option><option>South</option><option>Northeast</option></select>
+      <select id="partnerlens" onchange="renderOpps()">
+        <option value="">Partner lens: none</option>
+        <option>Affordable Housing Developer</option><option>Capital Partner</option>
+        <option>Architect / Land Planner</option><option>Environmental Consultant</option>
+        <option>General Contractor</option><option>Public Agency / Nonprofit</option>
+      </select>
+      <div class="viewtoggle"><button id="vList" class="on" onclick="setOppView('list')">List</button><button id="vMap" onclick="setOppView('map')">Map</button></div>
+    </div>
+    <div class="toolbar" style="margin-top:-4px;">
+      <span class="muted" style="font-size:12px;">Owner:</span><div class="chiprow" id="ownerChips"></div>
+      <span class="muted" style="font-size:12px;margin-left:8px;">Policy fit:</span><div class="chiprow" id="bondChips"></div>
+    </div>
+    <div class="count" id="count"></div>
+    <div class="grid" id="grid"></div>
+    <div class="mapwrap" id="mapwrap">
+      <div class="mapcanvas" id="mapcanvas"></div>
+      <div class="maplist" id="maplist"></div>
+      <div class="maplegend"><span><span class="dot" style="background:#2f6b35"></span>A / A-</span><span><span class="dot" style="background:#6f8b1e"></span>B+</span><span><span class="dot" style="background:#9c7a13"></span>B</span><span>Marker size = housing potential</span></div>
+    </div>
+  </div></div>
+</div>
+
+<!-- ============ WHY R SQUARED ============ -->
+<div class="view" id="v-why">
+  <div class="section"><div class="wrap">
+    <div class="eyebrow">Why R Squared</div>
+    <h1 style="font-size:32px;margin-top:0;">A decision-support system, not a database.</h1>
+    <div class="grid3" style="margin-top:18px;">
+      <div class="card"><h4>What to pursue</h4><p>Ranked opportunities scored on the same 12-category protocol — comparable nationwide.</p></div>
+      <div class="card"><h4>What to pay</h4><p>Estimated acquisition range, acquisition-difficulty and government-motivation scores, and an offer recommendation.</p></div>
+      <div class="card"><h4>How to structure</h4><p>Capital-stack snapshots, incentive layering, and a deal-readiness index for every asset.</p></div>
+      <div class="card"><h4>Who you need</h4><p>Partner-gap analysis shows the full execution team and exactly who is missing.</p></div>
+      <div class="card"><h4>Five expert reports</h4><p>Developer Playbook, Operations Readiness, Support Services, Capital Strategy, Entitlement Roadmap.</p></div>
+      <div class="card"><h4>Independent &amp; defensible</h4><p>Our methodology and relationships — not a data feed — are the moat.</p></div>
+    </div>
+  </div></div>
+</div>
+
+<!-- ============ PARTNER WITH US ============ -->
+<div class="view" id="v-partner">
+  <div class="section"><div class="wrap">
+    <div class="eyebrow">Partner with us</div>
+    <h1 style="font-size:30px;margin-top:0;">Membership</h1>
+    <div class="grid3" style="margin-top:14px;">
+      <div class="card"><h4>Free</h4><p class="muted">Top 100 preview · Opportunity Score &amp; grade · general location · owner type · category &amp; methodology descriptions.</p><button class="btn line" style="margin-top:12px;" onclick="setTier('free')">Current: free</button></div>
+      <div class="card" style="border-color:var(--blue);"><h4>Professional</h4><p class="muted">Full property profile · zoning summary · unit yield · incentives · risk scoring · comparable projects · downloadable brief.</p><button class="btn solid" style="margin-top:12px;" onclick="setTier('pro')">Sign in as Professional</button></div>
+      <div class="card" style="border-color:var(--accent);"><h4>Partner</h4><p class="muted">Financial assumptions · capital stack · procurement path · agency process · partner reports · R² introduction · deal room.</p><button class="btn primary" style="margin-top:12px;" onclick="setTier('partner')">Sign in as Partner</button></div>
+    </div>
+    <h3 style="margin-top:30px;color:var(--navy);">Choose your path</h3>
+    <div class="aud">
+      <div class="audcard" onclick="setAudience('Developers')"><div class="ic">D</div><h4>Developers</h4><p>"I already have a site."</p></div>
+      <div class="audcard" onclick="setAudience('Investors')"><div class="ic">I</div><h4>Investors</h4><p>"I need opportunities."</p></div>
+      <div class="audcard" onclick="setAudience('Land Owners')"><div class="ic">L</div><h4>Land Owners</h4><p>"I want to maximize my property's value."</p></div>
+      <div class="audcard" onclick="setAudience('Public Agencies')"><div class="ic">P</div><h4>Public Agencies</h4><p>"I have land that needs development."</p></div>
+    </div>
+  </div></div>
+</div>
+
+<!-- ============ ADMIN ============ -->
+<div class="view" id="v-admin">
+  <div class="section"><div class="wrap" style="max-width:900px;">
+    <div class="eyebrow" style="color:var(--red)">Internal · Admin only</div>
+    <h1 style="font-size:28px;margin-top:0;">R² Deal Economics</h1>
+    <div id="adminGate">
+      <p class="muted">Compensation, JV waterfall, and partner allocation are internal. Sign in to continue.</p>
+      <div class="toolbar"><input type="password" id="adminPw" placeholder="Admin password (demo: r2admin)" style="max-width:280px;"><button class="btn solid" onclick="adminLogin()">Unlock</button></div>
+      <div id="adminErr" style="color:var(--red);font-size:13px;display:none;">Incorrect password.</div>
+    </div>
+    <div id="adminBody" style="display:none;"></div>
+  </div></div>
+</div>
+
+<div class="overlay" id="overlay" onclick="if(event.target===this)closeModal()"><div class="modal" id="modal"></div></div>
+
+<footer><div class="wrap">
+  <span>R Squared — Intelligence Platform for Public Land Development · Demo v3</span>
+  <span class="muted" style="color:#8ea3c4;">Illustrative analyst estimates · public sources June 2026 · not investment advice</span>
+</div></footer>
 
 <script>
-/* ---------- scoring model ---------- */
-const WEIGHTS = {
-  "Market Demand":15,"Financial Return":20,"Entitlement Risk":10,"Environmental Risk":10,
-  "Public Benefit":10,"Housing Potential":10,"Acquisition Complexity":5,"Political Feasibility":5,
-  "Infrastructure":5,"Financing Availability":5,"Strategic Importance":5
-};
+/* ---------- model ---------- */
+const WEIGHTS={"Market Demand":15,"Financial Return":20,"Entitlement Risk":10,"Environmental Risk":10,"Public Benefit":10,"Housing Potential":10,"Acquisition Complexity":5,"Political Feasibility":5,"Infrastructure":5,"Financing Availability":5,"Strategic Importance":5};
 function weighted(s){let t=0;for(const k in WEIGHTS)t+=WEIGHTS[k]*(s[k]||0)/100;return t;}
-function letter(v){
-  if(v>=85)return["A+","#2f6b35"];if(v>=78)return["A","#2f6b35"];if(v>=72)return["A-","#3f7d20"];
-  if(v>=66)return["B+","#6f8b1e"];if(v>=60)return["B","#BF8F00"];if(v>=54)return["B-","#BF8F00"];
-  if(v>=48)return["C+","#c5740e"];if(v>=40)return["C","#C00000"];return["D","#C00000"];
-}
-function barColor(sc){if(sc>=75)return"#3f7d20";if(sc>=55)return"#BF8F00";return"#C00000";}
+function letter(v){if(v>=85)return["A+","#2f6b35"];if(v>=78)return["A","#2f6b35"];if(v>=72)return["A-","#3f7d20"];if(v>=66)return["B+","#6f8b1e"];if(v>=60)return["B","#9c7a13"];if(v>=54)return["B-","#9c7a13"];if(v>=48)return["C+","#c5740e"];if(v>=40)return["C","#b22020"];return["D","#b22020"];}
+function barColor(sc){if(sc>=75)return"#2f6b35";if(sc>=55)return"#9c7a13";return"#b22020";}
+const fmt=n=>'$'+Math.round(n).toLocaleString();
+const fmtM=n=>(Math.abs(n)>=1e6)?('$'+(n/1e6).toFixed(n>=1e7?0:2)+'M'):(Math.abs(n)>=1e3?('$'+(n/1e3).toFixed(0)+'K'):fmt(n));
 
-/* ---------- data: real U.S. sites ---------- */
 const DATA = [
  {id:"noho", name:"District NoHo — North Hollywood Station", city:"North Hollywood", state:"CA", region:"California",
   owner:"Local", ownerDetail:"LA Metro (joint development)", type:"Transit-oriented mixed-use", size:"11.8 acres",
@@ -521,240 +616,268 @@ const DATA = [
   risks:["Iconic architecture complicates residential conversion","Uncertain whether/when GSA releases it","SF conversion cost and absorption headwinds"],
   scores:{"Market Demand":68,"Financial Return":48,"Entitlement Risk":60,"Environmental Risk":65,"Public Benefit":72,"Housing Potential":75,"Acquisition Complexity":45,"Political Feasibility":60,"Infrastructure":88,"Financing Availability":78,"Strategic Importance":70}}
 ];
+
 DATA.forEach(d=>{d.total=weighted(d.scores);});
 
-/* ---------- filters ---------- */
-let ownerFilter="", bondFilter="", view="list";
-const OWNERS=["Federal","State","Local","Private"], BONDS=["High","Medium"];
+/* ---------- derived intelligence ---------- */
+function unitsN(d){return d.unitsN||200;}
+function tdcPerUnit(d){return /Office-to-residential/.test(d.type)?420:520;}
+function tdc(d){return unitsN(d)*tdcPerUnit(d)*1000;}
+function acqLikely(d){if(d.id==='ziggurat')return 177e6;if(d.id==='menlo')return 137e6;if(d.id==='henderson')return 2000;return unitsN(d)*45000;}
+function acqRange(d){const l=acqLikely(d);return{low:l*0.82,likely:l,high:l*1.18,conf:Math.min(92,Math.round(52+d.scores["Acquisition Complexity"]*0.4))};}
+function difficulty(d){const a=d.scores["Acquisition Complexity"];if(a>=80)return["Easy","#2f6b35","Agency has an active disposition program."];if(a>=65)return["Moderate","#6f8b1e","Similar sales completed but an RFP process is required."];if(a>=50)return["Complex","#9c7a13","Political approval likely required."];return["Highly Complex","#b22020","Legislative approval or multiple agencies involved."];}
+function govMotivation(d){let m=33;const s=(d.status||'').toLowerCase();if(/sold|listed|sale|disposition|surplus|awarded|excess|nominated|watch/.test(s))m+=24;m+=Math.round(d.scores["Public Benefit"]*0.2);m+=Math.round(d.scores["Financing Availability"]*0.1);if(d.owner==='Federal'||d.owner==='State')m+=6;return Math.min(96,m);}
+function govFactors(d){const f=[];const s=(d.status||'').toLowerCase();if(/surplus|excess/.test(s))f.push("Declared surplus / excess by the owner agency");if(/listed|sale|disposition|nominated/.test(s))f.push("Active disposition or listing in progress");if(/awarded/.test(s))f.push("Already awarded to a housing use");if(d.owner==='Federal')f.push("Federal cost-savings / footprint-reduction mandate");if(d.scores["Public Benefit"]>=80)f.push("Strong affordable-housing / public-benefit alignment");f.push("Carrying / deferred-maintenance cost pressure");return f.slice(0,5);}
+function offer(d){const l=acqLikely(d);return{rec:l*0.92,low:l*0.89,high:l*0.97,walk:l*1.10};}
+function irrRange(d){const fr=d.scores["Financial Return"];const lo=6+fr*0.10;return[lo.toFixed(1),(lo+4).toFixed(1)];}
+function entMonths(d){const e=d.scores["Entitlement Risk"];const lo=Math.round(46-e*0.32);return[Math.max(9,lo),Math.max(9,lo)+6];}
+function capStack(d){const T=tdc(d),P=acqLikely(d),hard=T*0.66,soft=T*0.20;const total=P+hard+soft;
+  const funds=[];const bp=d.bondPrograms.join(' ').toLowerCase();
+  if(/mhp|affordable|supportive|lihtc|calhome|farmworker/.test(bp)||d.scores["Public Benefit"]>=78)funds.push("4% LIHTC + tax-exempt bonds");
+  if(/bond|mhp/.test(bp))funds.push("State housing program (MHP / bond)");
+  if(/road act|oz|infill/.test(bp))funds.push("Opportunity Zone equity / infill grant");
+  if(/tif|467|conversion|district/.test(bp))funds.push("Local TIF / conversion incentive");
+  if(/calvet|veteran|vash/.test(bp))funds.push("CalVet / HUD-VASH");
+  funds.push("Local housing trust funds");funds.push("Deferred developer fee");funds.push("Conventional construction loan");
+  return{P,hard,soft,total,funds:[...new Set(funds)].slice(0,6)};}
+const TEAM=["Affordable Housing Developer","Public Finance Consultant","Veteran / Supportive Service Provider","Land-Use Attorney","Property Manager","Environmental Consultant","Civil Engineer","Architect","General Contractor"];
+function partnerGap(d){let h=0;for(const c of d.id)h=(h*31+c.charCodeAt(0))>>>0;
+  const need=new Set();let i1=h%TEAM.length,i2=(h*7+3)%TEAM.length;if(i2===i1)i2=(i2+1)%TEAM.length;need.add(i1);need.add(i2);
+  if(/veteran|supportive/i.test(d.type))need.delete(2);
+  return TEAM.map((t,i)=>({t,have:!need.has(i)}));}
+function readiness(d){const s=d.scores;return[["Acquisition Potential",s["Acquisition Complexity"]],["Political Feasibility",s["Political Feasibility"]],["Housing Demand",s["Market Demand"]],["Entitlement (ease)",s["Entitlement Risk"]],["Environmental (clean)",s["Environmental Risk"]],["Infrastructure",s["Infrastructure"]],["Capital Availability",s["Financing Availability"]],["Competition (favorability)",Math.round(40+(100-s["Market Demand"])*0.45)],["Timeline (speed)",s["Entitlement Risk"]],["Overall Opportunity",Math.round(d.total)]];}
+
+/* ---------- tier / state ---------- */
+const TIERS={free:0,pro:1,partner:2,admin:3};
+const TIERNAMES=["Free","Professional","Partner","Internal/Admin"];
+let tier='free', audience='', oppView='list', adminUnlocked=false, currentReport='dev';
+function setTier(t){tier=t;document.getElementById('tierlabel').textContent=TIERNAMES[TIERS[t]];renderOpps();if(document.getElementById('overlay').classList.contains('show')&&openId)openModal(openId);}
+function cycleTier(){const order=['free','pro','partner'];let i=order.indexOf(tier);if(i<0)i=2;setTier(order[(i+1)%order.length]);}
+function can(level){return TIERS[tier]>=TIERS[level];}
+
+/* ---------- nav ---------- */
+function go(v){document.querySelectorAll('.view').forEach(x=>x.classList.remove('on'));document.getElementById('v-'+v).classList.add('on');
+  document.querySelectorAll('nav .navlink').forEach(n=>n.classList.toggle('on',n.dataset.v===v));window.scrollTo(0,0);
+  if(v==='opps')renderOpps();}
+function setAudience(a){audience=a;document.getElementById('audctx').textContent='Showing through the lens of: '+a;go('opps');}
+
+/* ---------- credibility band ---------- */
+(function cred(){const active=DATA.filter(d=>!d.transacted);
+  const units=active.reduce((s,d)=>s+unitsN(d),0);
+  const val=active.reduce((s,d)=>s+tdc(d),0);
+  const agencies=new Set(active.map(d=>d.ownerDetail)).size;
+  const c=[["100+","Opportunities under evaluation"],[units.toLocaleString(),"Housing units evaluated"],
+    ["$"+(val/1e9).toFixed(0)+"B+","Est. development value identified"],[agencies+"+","Public agencies tracked"],
+    [new Set(active.map(d=>d.state)).size,"States covered"],["10","Partner disciplines"]];
+  document.getElementById('credband').innerHTML=c.map(x=>`<div class="c"><div class="n">${x[0]}</div><div class="l">${x[1]}</div></div>`).join('');
+})();
+
+/* ---------- AI upload (simulated) ---------- */
+function runAI(){
+  const q=(document.getElementById('aiInput').value||'').trim();const box=document.getElementById('aiResult');
+  if(!q){box.classList.remove('show');return;}
+  let match=DATA.find(d=>{const t=(d.name+' '+d.city+' '+d.state).toLowerCase();return q.toLowerCase().split(/[, ]+/).some(w=>w.length>3&&t.includes(w));});
+  let score,name,loc,type,grade,gc;
+  if(match){score=match.total;[grade,gc]=letter(score);name=match.name;loc=match.city+', '+match.state;type=match.type;}
+  else{let h=0;for(const c of q)h=(h*31+c.charCodeAt(0))>>>0;score=62+h%22;[grade,gc]=letter(score);name=q;loc='Detected location';type='Mixed-use / housing redevelopment';}
+  const inc=match?match.bondPrograms.slice(0,3).join(' · '):'Opportunity Zone · ROAD Act (RESIDE) · LIHTC potential';
+  box.innerHTML=`<div class="aiscore pulse"><span class="g" style="background:${gc}">${grade}</span><div><div class="v">${score.toFixed(1)}<span style="font-size:14px;color:#6b7480;">/100</span></div><div style="font-size:12px;color:#6b7480;">R Squared Opportunity Score</div></div>
+    <div style="margin-left:auto;text-align:right;font-size:12px;color:#6b7480;">${name}<br>${loc}</div></div>
+    <div class="aigrid">
+      <div><span class="k">Zoning analysis</span>${match?'Public/government parcel; rezoning or plan amendment pathway assessed.':'Pulls parcel zoning, FAR, height & overlay; flags rezoning need.'}</div>
+      <div><span class="k">Financial feasibility</span>Est. TDC, return profile, and exit modeled to the protocol.</div>
+      <div><span class="k">Incentives</span>${inc}</div>
+      <div><span class="k">Risks</span>${match?match.risks[0]:'Entitlement, environmental & capital risk scored.'}</div>
+      <div><span class="k">Highest &amp; best use</span>${match?match.hbu:'Determined from market, zoning & demand.'}</div>
+      <div><span class="k">Recommended partners</span>Affordable developer · public-finance · entitlement counsel.</div>
+    </div>
+    <div style="margin-top:12px;">${match?`<button class="btn solid" onclick="openModal('${match.id}')">Open full analysis →</button>`:`<button class="btn line" onclick="go('partner')">Unlock full analysis (membership)</button>`}</div>
+    <div class="note" style="margin-top:10px;">Illustrative review generated from the R Squared 12-category protocol for demonstration.</div>`;
+  box.classList.add('show');
+}
+
+/* ---------- opportunities ---------- */
+let ownerFilter="",bondFilter="";const OWNERS=["Federal","State","Local","Private"],BONDS=["High","Medium"];
 function ownerClass(o){return o==="Federal"?"fed":o==="State"?"state":o==="Local"?"local":"priv";}
-
-function setupChips(){
-  const oc=document.getElementById('ownerChips');oc.innerHTML='';
-  ["All",...OWNERS].forEach(o=>{const c=document.createElement('span');
-    c.className='chip'+((ownerFilter===''&&o==="All")||ownerFilter===o?' active':'');
-    c.textContent=o;c.onclick=()=>{ownerFilter=(o==="All"?"":o);setupChips();render();};oc.appendChild(c);});
-  const bc=document.getElementById('bondChips');bc.innerHTML='';
-  ["All",...BONDS].forEach(b=>{const c=document.createElement('span');
-    c.className='chip'+((bondFilter===''&&b==="All")||bondFilter===b?' active':'');
-    c.textContent=b;c.onclick=()=>{bondFilter=(b==="All"?"":b);setupChips();render();};bc.appendChild(c);});
-}
-
-function stats(){
-  const active=DATA.filter(d=>!d.transacted);
-  const totUnits=active.reduce((s,d)=>s+(d.unitsN||0),0);
-  const avg=(active.reduce((s,d)=>s+d.total,0)/active.length).toFixed(1);
-  const states=new Set(active.map(d=>d.state)).size;
-  const grades=active.filter(d=>d.total>=72).length;
-  document.getElementById('stats').innerHTML=[
-    [active.length,"Active opportunities"],["~"+totUnits.toLocaleString(),"Housing units in scope"],
-    [avg,"Avg opportunity score"],[states,"States covered"],[grades,"Rated A- or better"]
-  ].map(c=>`<div class="stat"><div class="n">${c[0]}</div><div class="l">${c[1]}</div></div>`).join('');
-}
-
-function getList(){
-  const q=document.getElementById('search').value.toLowerCase();
+function bestPartner(d){if(/veteran|supportive/i.test(d.type))return"Veteran / supportive provider";if(/Office-to-residential/.test(d.type))return"Conversion developer";if(/state land|Federal land|surplus/i.test(d.type))return"Affordable (LIHTC) developer";if(/Transit/.test(d.type))return"Affordable + transit developer";return"Master-plan developer";}
+function accessFor(d){return"Pro";}
+function setupChips(){const oc=document.getElementById('ownerChips');oc.innerHTML='';["All",...OWNERS].forEach(o=>{const c=document.createElement('span');c.className='chip'+((ownerFilter===''&&o==="All")||ownerFilter===o?' active':'');c.textContent=o;c.onclick=()=>{ownerFilter=(o==="All"?"":o);setupChips();renderOpps();};oc.appendChild(c);});
+  const bc=document.getElementById('bondChips');bc.innerHTML='';["All",...BONDS].forEach(b=>{const c=document.createElement('span');c.className='chip'+((bondFilter===''&&b==="All")||bondFilter===b?' active':'');c.textContent=b;c.onclick=()=>{bondFilter=(b==="All"?"":b);setupChips();renderOpps();};bc.appendChild(c);});}
+function partnerLensOk(d,lens){if(!lens)return true;const s=d.scores;
+  if(lens==="Affordable Housing Developer")return d.bondFit==="High"||/affordable|state land|Federal land|supportive|transit/i.test(d.type);
+  if(lens==="Capital Partner")return unitsN(d)>=250;
+  if(lens==="Architect / Land Planner")return true;
+  if(lens==="Environmental Consultant")return s["Environmental Risk"]<=70||/Federal|base|hospital|industrial/i.test(d.type+d.ownerDetail);
+  if(lens==="General Contractor")return /Office-to-residential|mixed|base|conversion/i.test(d.type);
+  if(lens==="Public Agency / Nonprofit")return s["Public Benefit"]>=78;
+  return true;}
+function getList(){const q=document.getElementById('search').value.toLowerCase();const sort=document.getElementById('sort').value;const region=document.getElementById('region').value;const lens=document.getElementById('partnerlens').value;
+  let list=DATA.filter(d=>{if(ownerFilter&&d.owner!==ownerFilter)return false;if(bondFilter&&d.bondFit!==bondFilter)return false;if(region&&d.region!==region)return false;if(!partnerLensOk(d,lens))return false;if(q&&!(d.name+d.city+d.state+d.ownerDetail+d.type).toLowerCase().includes(q))return false;return true;});
+  list.sort((a,b)=>sort==="name"?a.name.localeCompare(b.name):sort==="units"?(b.unitsN-a.unitsN):b.total-a.total);return list;}
+function renderOpps(){setupChips();const list=getList();document.getElementById('count').textContent=`${list.length} of ${DATA.length} shown`+(audience?` · ${audience} view`:'');
   const sort=document.getElementById('sort').value;
-  const region=document.getElementById('region').value;
-  let list=DATA.filter(d=>{
-    if(ownerFilter&&d.owner!==ownerFilter)return false;
-    if(bondFilter&&d.bondFit!==bondFilter)return false;
-    if(region&&d.region!==region)return false;
-    if(q&&!(d.name+d.city+d.state+d.ownerDetail+d.type).toLowerCase().includes(q))return false;
-    return true;
-  });
-  list.sort((a,b)=> sort==="name"?a.name.localeCompare(b.name): sort==="units"?(b.unitsN-a.unitsN): b.total-a.total);
-  return list;
-}
-
-function render(){
-  const list=getList();
-  document.getElementById('count').textContent=`${list.length} ${list.length===1?'opportunity':'opportunities'} shown`;
-  const sort=document.getElementById('sort').value;
-  document.getElementById('grid').innerHTML=list.map((d,i)=>{
-    const [gr,col]=letter(d.total);
-    const rank=sort==="score"?`<span style="font-size:11px;color:var(--muted);">#${i+1}</span> `:'';
-    const bondCol=d.bondFit==="High"?"#3f7d20":d.bondFit==="Medium"?"#BF8F00":"#C00000";
-    return `<div class="card" onclick="openModal('${d.id}')">
-      <div class="top"><div><div class="name">${rank}${d.name}</div><div class="loc">${d.city}, ${d.state} · ${d.region}</div></div>
-        <div class="scorebadge"><span class="grade" style="background:${col}">${gr}</span>
-          <div class="val">${d.total.toFixed(1)}</div><div class="small">/ 100</div></div></div>
-      <div class="tags"><span class="tag ${ownerClass(d.owner)}">${d.ownerDetail}</span>
-        <span class="tag type">${d.type}</span>${d.transacted?'<span class="tag sold">Comp / delivered</span>':''}</div>
-      <div class="bondfit"><span><span class="dot" style="background:${bondCol}"></span>Policy fit: <b>${d.bondFit}</b></span>
-        <span>Housing: <span class="units">${d.units}</span></span></div></div>`;
-  }).join('');
-  if(view==="map")renderMap(list);
-}
+  document.getElementById('grid').innerHTML=list.map((d,i)=>{const[gr,col]=letter(d.total);const rank=sort==="score"?`<span class="rank">#${i+1}</span> `:'';const bc=d.bondFit==="High"?"#2f6b35":d.bondFit==="Medium"?"#9c7a13":"#b22020";
+    return `<div class="ocard" onclick="openModal('${d.id}')"><div class="top"><div><div class="name">${rank}${d.name}</div><div class="loc">${d.city}, ${d.state} · ${d.region}</div></div>
+      <div class="badge"><span class="grade" style="background:${col}">${gr}</span><div class="val">${d.total.toFixed(1)}</div><div class="small">/100</div></div></div>
+      <div class="tags"><span class="tag ${ownerClass(d.owner)}">${d.owner}</span><span class="tag type">${d.type}</span>${d.transacted?'<span class="tag sold">Comp</span>':''}</div>
+      <div class="foot"><span><span class="dot" style="background:${bc}"></span>Best fit: <b>${bestPartner(d)}</b></span><span>Housing: <span class="units">${d.units}</span></span></div></div>`;}).join('');
+  if(oppView==="map")renderMap(list);}
+function setOppView(v){oppView=v;document.getElementById('vList').classList.toggle('on',v==='list');document.getElementById('vMap').classList.toggle('on',v==='map');document.getElementById('grid').style.display=v==='list'?'grid':'none';document.getElementById('mapwrap').classList.toggle('show',v==='map');renderOpps();}
 
 /* ---------- US map ---------- */
-const US_BORDER=[[49.0,-123.0],[49.0,-95.0],[48.0,-89.5],[47.3,-90.5],[46.5,-84.5],[45.0,-83.0],
-[43.5,-82.5],[41.7,-82.9],[42.9,-78.9],[44.0,-76.5],[45.0,-74.7],[47.0,-69.2],[45.2,-67.0],
-[42.9,-70.8],[41.4,-71.4],[40.5,-74.0],[38.9,-75.0],[36.9,-76.0],[35.2,-75.5],[32.0,-80.8],
-[30.4,-81.4],[25.2,-80.3],[25.1,-81.2],[27.8,-82.8],[30.0,-84.0],[30.2,-88.0],[29.2,-90.0],
-[29.7,-93.8],[27.8,-97.0],[25.9,-97.4],[29.3,-100.9],[31.8,-106.5],[31.3,-111.0],[32.7,-114.7],
-[32.5,-117.1],[34.0,-118.5],[36.6,-121.9],[37.8,-122.5],[40.4,-124.4],[43.0,-124.4],[46.2,-124.0],[48.4,-124.7]];
-const MINLON=-125.5,MAXLON=-66.5,MINLAT=24.0,MAXLAT=49.8,MW=900,MH=470;
-function px(lon){return (lon-MINLON)/(MAXLON-MINLON)*MW;}
-function py(lat){return (MAXLAT-lat)/(MAXLAT-MINLAT)*MH;}
+const US_BORDER=[[49,-123],[49,-95],[48,-89.5],[47.3,-90.5],[46.5,-84.5],[45,-83],[43.5,-82.5],[41.7,-82.9],[42.9,-78.9],[44,-76.5],[45,-74.7],[47,-69.2],[45.2,-67],[42.9,-70.8],[41.4,-71.4],[40.5,-74],[38.9,-75],[36.9,-76],[35.2,-75.5],[32,-80.8],[30.4,-81.4],[25.2,-80.3],[25.1,-81.2],[27.8,-82.8],[30,-84],[30.2,-88],[29.2,-90],[29.7,-93.8],[27.8,-97],[25.9,-97.4],[29.3,-100.9],[31.8,-106.5],[31.3,-111],[32.7,-114.7],[32.5,-117.1],[34,-118.5],[36.6,-121.9],[37.8,-122.5],[40.4,-124.4],[43,-124.4],[46.2,-124],[48.4,-124.7]];
+const MINLON=-125.5,MAXLON=-66.5,MINLAT=24,MAXLAT=49.8,MW=900,MH=470;
+const px=l=>(l-MINLON)/(MAXLON-MINLON)*MW, py=l=>(MAXLAT-l)/(MAXLAT-MINLAT)*MH;
+function renderMap(list){const poly=US_BORDER.map(p=>`${px(p[1]).toFixed(1)},${py(p[0]).toFixed(1)}`).join(' ');const ids=new Set(list.map(d=>d.id));
+  const mk=DATA.filter(d=>ids.has(d.id)).sort((a,b)=>b.unitsN-a.unitsN).map(d=>{const[gr,col]=letter(d.total);const r=4+Math.min(11,Math.sqrt(d.unitsN)/9);
+    return `<circle class="mk" cx="${px(d.lon).toFixed(1)}" cy="${py(d.lat).toFixed(1)}" r="${r.toFixed(1)}" fill="${col}" fill-opacity="0.82" stroke="#fff" stroke-width="1.3" onclick="openModal('${d.id}')" onmousemove="showTip(event,'${d.name.replace(/'/g,'')} (${d.state}) — ${gr} ${d.total.toFixed(1)}')" onmouseout="hideTip()"></circle>`;}).join('');
+  document.getElementById('mapcanvas').innerHTML=`<svg viewBox="0 0 ${MW} ${MH}" xmlns="http://www.w3.org/2000/svg"><polygon class="uspoly" points="${poly}"></polygon>${mk}</svg><div class="tipbox" id="tipbox"></div>`;
+  document.getElementById('maplist').innerHTML=[...list].sort((a,b)=>b.total-a.total).map(d=>{const[gr,col]=letter(d.total);return `<div class="maprow" onclick="openModal('${d.id}')"><div class="mg" style="background:${col}">${gr}</div><div><div class="mn">${d.name}</div><div class="ml">${d.city}, ${d.state} · ${d.units}</div></div></div>`;}).join('');}
+function showTip(e,t){const x=document.getElementById('tipbox');if(!x)return;const r=document.getElementById('mapcanvas').getBoundingClientRect();x.textContent=t;x.style.left=(e.clientX-r.left)+'px';x.style.top=(e.clientY-r.top)+'px';x.style.opacity=1;}
+function hideTip(){const x=document.getElementById('tipbox');if(x)x.style.opacity=0;}
 
-function renderMap(list){
-  const poly=US_BORDER.map(p=>`${px(p[1]).toFixed(1)},${py(p[0]).toFixed(1)}`).join(' ');
-  const ids=new Set(list.map(d=>d.id));
-  const markers=DATA.filter(d=>ids.has(d.id)).sort((a,b)=>b.unitsN-a.unitsN).map(d=>{
-    const [gr,col]=letter(d.total);
-    const r=4+Math.min(11,Math.sqrt(d.unitsN)/9);
-    return `<circle class="mk" cx="${px(d.lon).toFixed(1)}" cy="${py(d.lat).toFixed(1)}" r="${r.toFixed(1)}"
-      fill="${col}" fill-opacity="0.82" stroke="#fff" stroke-width="1.3"
-      onclick="openModal('${d.id}')"
-      onmousemove="showTip(event,'${d.name.replace(/'/g,"")} (${d.state}) — ${gr} ${d.total.toFixed(1)}')"
-      onmouseout="hideTip()"></circle>`;
-  }).join('');
-  document.getElementById('mapcanvas').innerHTML=
-    `<svg viewBox="0 0 ${MW} ${MH}" xmlns="http://www.w3.org/2000/svg">
-      <polygon class="uspoly" points="${poly}"></polygon>${markers}</svg>
-     <div class="tipbox" id="tipbox"></div>`;
-  const sorted=[...list].sort((a,b)=>b.total-a.total);
-  document.getElementById('maplist').innerHTML=sorted.map(d=>{
-    const [gr,col]=letter(d.total);
-    return `<div class="maprow" onclick="openModal('${d.id}')">
-      <div class="mg" style="background:${col}">${gr}</div>
-      <div><div class="mn">${d.name}</div><div class="ml">${d.city}, ${d.state} · ${d.units} homes</div></div></div>`;
-  }).join('');
-}
-function showTip(e,txt){const t=document.getElementById('tipbox');if(!t)return;
-  const rect=document.getElementById('mapcanvas').getBoundingClientRect();
-  t.textContent=txt;t.style.left=(e.clientX-rect.left)+'px';t.style.top=(e.clientY-rect.top)+'px';t.style.opacity=1;}
-function hideTip(){const t=document.getElementById('tipbox');if(t)t.style.opacity=0;}
-
-function setView(v){
-  view=v;
-  document.getElementById('vList').classList.toggle('on',v==='list');
-  document.getElementById('vMap').classList.toggle('on',v==='map');
-  document.getElementById('grid').style.display=v==='list'?'grid':'none';
-  document.getElementById('mapwrap').classList.toggle('show',v==='map');
-  render();
-}
-
-/* ---------- property modal ---------- */
-function openModal(id){
-  const d=DATA.find(x=>x.id===id);if(!d)return;
-  const [gr,col]=letter(d.total);
-  const rows=Object.keys(WEIGHTS).map(c=>{const sc=d.scores[c];
-    return `<div class="srow"><span class="cat">${c}</span><span class="wt">${WEIGHTS[c]}%</span>
-      <span class="barwrap"><span style="width:${sc}%;background:${barColor(sc)}"></span></span>
-      <span class="sc">${sc}</span></div>`;}).join('');
-  const kv=[["Owner",d.ownerDetail],["Type",d.type],["Location",d.city+", "+d.state+" · "+d.region],["Size",d.size],
-    ["Status",d.status],["Housing potential",d.units+" homes"],["Highest & best use",d.hbu]]
-    .map(([k,v])=>`<div${k==="Highest & best use"?' style="grid-column:1/3"':''}><span class="k">${k}</span><span class="v">${v}</span></div>`).join('');
-  document.getElementById('modal').innerHTML=`
-    <div class="mhead"><span class="x" onclick="closeModal()">&times;</span>
-      <h2>${d.name}</h2><div class="mloc">${d.city}, ${d.state} · ${d.region} · ${d.ownerDetail}</div>
-      <div class="mscore"><span class="gr" style="background:${col}">${gr}</span>
-        <div><span class="big">${d.total.toFixed(1)}</span> <span style="opacity:.8;">/ 100 · Opportunity Score</span></div>
-        <button class="jvbtn" onclick="openJV('${d.id}')">Build the JV →</button></div></div>
-    <div class="mbody">
-      <h3>Property profile</h3><div class="kv">${kv}</div>
-      <h3>12-Category score breakdown</h3><div class="scoretbl">${rows}</div>
-      <h3>Policy / program fit — ${d.bondFit}</h3>
-      <div class="bondbox">Target programs &amp; incentives:
-        <div class="progs">${d.bondPrograms.map(p=>`<span class="prog">${p}</span>`).join('')}</div></div>
-      <h3>Top value drivers</h3><ul class="lst">${d.highlights.map(h=>`<li>${h}</li>`).join('')}</ul>
-      <h3>Key risks</h3><ul class="lst">${d.risks.map(r=>`<li>${r}</li>`).join('')}</ul>
-      <div class="note">Scores are illustrative analyst estimates demonstrating the R Squared methodology. Property facts from public sources (GSA, VA, BLM/SNPLMA, CA DGS-HCD, LA Metro, city programs) as of June 2026. Not investment advice or an appraisal.</div>
-    </div>`;
+/* ---------- property modal (gated) ---------- */
+let openId=null;
+function lockBlock(level,label){return `<div class="lockmsg"><div class="ic">🔒</div><h4>${label}</h4><p>Available to ${TIERNAMES[TIERS[level]]} members and above.</p><button class="btn solid" onclick="go('partner')">Upgrade access</button></div>`;}
+function scoreRows(d){return Object.keys(WEIGHTS).map(c=>{const sc=d.scores[c];return `<div class="srow"><span>${c}</span><span class="muted" style="text-align:right;font-size:11px;">${WEIGHTS[c]}%</span><span class="barwrap"><span style="width:${sc}%;background:${barColor(sc)}"></span></span><span class="sc">${sc}</span></div>`;}).join('');}
+function openModal(id){openId=id;const d=DATA.find(x=>x.id===id);if(!d)return;const[gr,col]=letter(d.total);
   document.getElementById('overlay').classList.add('show');
+  const tabs=[["overview","Overview","free"],["score","Score & Advantage","free"],["acq","Acquisition Intelligence","pro"],["capital","Capital & Offer","partner"],["reports","Partner Reports","partner"],["gap","Partner Gap","pro"]];
+  const tabhtml=tabs.map(t=>`<span class="mtab${t[0]===modalTab?' on':''}" onclick="modalTab='${t[0]}';openModal('${id}')">${t[1]}${can(t[2])?'':' <span class="mlock">🔒</span>'}</span>`).join('');
+  document.getElementById('modal').innerHTML=`
+    <div class="mhead"><span class="x" onclick="closeModal()">&times;</span><h2>${d.name}</h2>
+      <div class="mloc">${d.city}, ${d.state} · ${d.region} · ${d.ownerDetail}</div>
+      <div class="mscore"><span class="gr" style="background:${col}">${gr}</span><div><span class="big">${d.total.toFixed(1)}</span> <span style="opacity:.8;">/100 · Opportunity Score</span></div>
+        <div class="signrow" style="margin-left:auto;"><span style="opacity:.8;">Access: <b style="color:#e9d28f;">${TIERNAMES[TIERS[tier]]}</b></span></div></div></div>
+    <div class="mtabs">${tabhtml}</div>
+    <div class="mbody" id="mbody">${tabBody(d)}</div>`;
 }
-function closeModal(){document.getElementById('overlay').classList.remove('show');}
+let modalTab='overview';
+function tabBody(d){
+  if(modalTab==='overview'){
+    const kv=[["Owner",d.ownerDetail],["Type",d.type],["Location",d.city+", "+d.state],["Size",d.size],["Status",d.status],["Housing potential",d.units+" homes"],["Best-fit partner",bestPartner(d)],["Policy fit",d.bondFit]].map(([k,v])=>`<div><span class="k">${k}</span><span class="v">${v}</span></div>`).join('');
+    return `<div class="advbox"><h4>The R Squared Advantage</h4><ul class="lst" style="margin:0;">${d.highlights.map(h=>`<li>${h}</li>`).join('')}<li>Estimated capacity: ${d.units} homes · entitlement ~${entMonths(d)[0]}–${entMonths(d)[1]} months</li></ul></div>
+      <h3>Snapshot</h3><div class="kv">${kv}</div>
+      <h3>Top 3 value drivers</h3><ul class="lst">${d.highlights.slice(0,3).map(h=>`<li>${h}</li>`).join('')}</ul>
+      <h3>Top 3 risks</h3><ul class="lst">${d.risks.slice(0,3).map(r=>`<li>${r}</li>`).join('')}</ul>
+      <div class="note">Teaser view (Free). Unlock the full file with Professional or Partner membership.</div>`;
+  }
+  if(modalTab==='score'){
+    return `<h3>12-category protocol</h3>${scoreRows(d)}
+      <h3>Policy / program fit — ${d.bondFit}</h3><div class="progs">${d.bondPrograms.map(p=>`<span class="prog">${p}</span>`).join('')}</div>
+      <h3>Deal Readiness Index</h3><div class="kv">${readiness(d).map(r=>`<div><span class="k">${r[0]}</span><span class="v" style="color:${barColor(r[1])}">${r[1]}</span></div>`).join('')}</div>`;
+  }
+  if(modalTab==='acq'){
+    if(!can('pro'))return lockBlock('pro','Acquisition Intelligence');
+    const r=acqRange(d),[dl,dc,dr]=difficulty(d),gm=govMotivation(d);
+    return `<h3>Estimated acquisition range</h3>
+      <div class="rangebar"><div class="b"><div class="n">${fmtM(r.low)}</div><div class="l">Low</div></div><div class="b"><div class="n" style="color:var(--accent)">${fmtM(r.likely)}</div><div class="l">Likely</div></div><div class="b"><div class="n">${fmtM(r.high)}</div><div class="l">High</div></div><div class="b"><div class="n">${r.conf}%</div><div class="l">Confidence</div></div></div>
+      <p class="muted" style="font-size:12px;">Based on comparable public dispositions, improvements, zoning, entitlement potential, agency history, market land values, infrastructure & environmental constraints.</p>
+      <h3>Acquisition difficulty</h3><span class="pill2" style="background:${dc}22;color:${dc};">${dl}</span> <span class="muted" style="font-size:13px;">${dr}</span>
+      <h3>Government motivation score</h3><div class="rangebar"><div class="b" style="flex:0 0 90px;"><div class="n" style="color:${barColor(gm)}">${gm}</div><div class="l">/100</div></div><div style="flex:1;text-align:left;"><ul class="lst" style="margin:0;">${govFactors(d).map(f=>`<li>${f}</li>`).join('')}</ul></div></div>`;
+  }
+  if(modalTab==='capital'){
+    if(!can('partner'))return lockBlock('partner','Capital stack, offer recommendation & financing');
+    const cs=capStack(d),o=offer(d),irr=irrRange(d);
+    return `<h3>Capital stack snapshot</h3><div class="kv">
+        <div><span class="k">Purchase</span><span class="v">${fmtM(cs.P)}</span></div>
+        <div><span class="k">Hard costs</span><span class="v">${fmtM(cs.hard)}</span></div>
+        <div><span class="k">Soft costs</span><span class="v">${fmtM(cs.soft)}</span></div>
+        <div><span class="k">Total development cost</span><span class="v">${fmtM(cs.total)}</span></div></div>
+      <div class="progs" style="margin-top:8px;">${cs.funds.map(f=>`<span class="prog">${f}</span>`).join('')}</div>
+      <h3>Offer recommendation</h3>
+      <div class="rangebar"><div class="b"><div class="n" style="color:var(--accent)">${fmtM(o.rec)}</div><div class="l">Recommended offer</div></div><div class="b"><div class="n">${fmtM(o.low)}–${fmtM(o.high)}</div><div class="l">Negotiation range</div></div><div class="b"><div class="n">${fmtM(o.walk)}</div><div class="l">Walk-away</div></div><div class="b"><div class="n">${irr[0]}–${irr[1]}%</div><div class="l">Est. IRR</div></div></div>
+      <ul class="lst">${d.risks.map(r=>`<li>${r}</li>`).join('')}</ul>
+      <button class="btn primary" style="margin-top:6px;" onclick="alert('Demo: an introduction request would be routed to R Squared.')">Request R² introduction</button>`;
+  }
+  if(modalTab==='reports'){
+    if(!can('partner'))return lockBlock('partner','Five partner expert reports');
+    return `<div class="reportwrap"><div class="reporttabs">
+      <span class="rtab${currentReport==='dev'?' on':''}" onclick="currentReport='dev';openModal('${d.id}')">Developer Playbook</span>
+      <span class="rtab${currentReport==='ops'?' on':''}" onclick="currentReport='ops';openModal('${d.id}')">Operations Readiness</span>
+      <span class="rtab${currentReport==='svc'?' on':''}" onclick="currentReport='svc';openModal('${d.id}')">Support Services</span>
+      <span class="rtab${currentReport==='cap'?' on':''}" onclick="currentReport='cap';openModal('${d.id}')">Capital Strategy</span>
+      <span class="rtab${currentReport==='ent'?' on':''}" onclick="currentReport='ent';openModal('${d.id}')">Entitlement Roadmap</span>
+      </div>${reportBody(d)}</div>`;
+  }
+  if(modalTab==='gap'){
+    if(!can('pro'))return lockBlock('pro','Partner Gap Analysis');
+    const g=partnerGap(d);return `<h3>Execution team — who's in place, who's needed</h3>
+      <div class="gapgrid">${g.map(x=>`<div class="${x.have?'ok':'no'}">${x.have?'✓':'✗'} ${x.t}${x.have?'':' — needed'}</div>`).join('')}</div>
+      <p class="muted" style="margin-top:12px;font-size:13px;">R Squared sources and assembles the missing partners.</p>
+      <button class="btn primary" onclick="go('partner')">Request matched partners</button>`;
+  }
+  return '';
+}
+function kvList(arr){return `<div class="kv">${arr.map(([k,v])=>`<div><span class="k">${k}</span><span class="v">${v}</span></div>`).join('')}</div>`;}
+function reportBody(d){const cs=capStack(d),o=offer(d),irr=irrRange(d),em=entMonths(d);const aff=d.bondFit==="High";
+  if(currentReport==='dev')return `<div class="rh">Developer Playbook — "Can I build this profitably?"</div>`+kvList([
+    ["Feasibility score",d.scores["Financial Return"]],["Est. unit count",d.units],["LIHTC potential",aff?"Strong (4% / 9%)":"Possible"],
+    ["Bond financing",/bond|mhp/i.test(d.bondPrograms.join())?"Likely eligible":"Case-by-case"],["Entitlement timeline",em[0]+"–"+em[1]+" months"],
+    ["Est. development cost",fmtM(tdc(d))],["Est. developer fee",fmtM(tdc(d)*0.035)],["Suggested acquisition",fmtM(acqLikely(d))],
+    ["Recommended offer",fmtM(o.rec)],["Est. IRR",irr[0]+"–"+irr[1]+"%"]])+`<h3>Major risks</h3><ul class="lst">${d.risks.map(r=>`<li>${r}</li>`).join('')}</ul>`;
+  if(currentReport==='ops')return `<div class="rh">Operations Readiness — "Can we operate this?"</div>`+kvList([
+    ["Mission compatibility",d.scores["Public Benefit"]>=80?"High":"Moderate"],["Supportive-housing potential",/supportive|veteran/i.test(d.type)?"High":d.scores["Public Benefit"]>=78?"Moderate":"Limited"],
+    ["Population served",/veteran/i.test(d.type)?"Veterans / formerly homeless":aff?"Lower-income households":"Mixed-income"],
+    ["Operating subsidy",aff?"Project-based vouchers / state ops":"Limited"],["Compliance load",aff?"LIHTC + bond monitoring":"Standard"],
+    ["Est. operating budget","Per-unit underwriting at Partner tier"],["Local nonprofit ecosystem",d.region==="California"?"Deep":"Developing"]]);
+  if(currentReport==='svc')return `<div class="rh">Support Services Assessment — "Can we deliver services here?"</div>`+kvList([
+    ["Veteran fit",/veteran/i.test(d.type)?"Very high":"Moderate"],["Transit access",d.scores["Infrastructure"]>=85?"Excellent":"Good"],
+    ["Healthcare / VA proximity",d.id==='vala'?"On-campus VA":"Regional"],["Community support",d.scores["Political Feasibility"]>=75?"Strong":"Mixed"],
+    ["Workforce / employment","Submarket analysis at Partner tier"],["Service funding eligibility",aff?"Multiple sources":"Limited"]]);
+  if(currentReport==='cap')return `<div class="rh">Capital Strategy Report — "How do we finance this?"</div>`+kvList([
+    ["Total development cost",fmtM(cs.total)],["Equity (≈)",fmtM(cs.total*0.20)],["Debt (≈)",fmtM(cs.total*0.55)],
+    ["Subsidy / soft (≈)",fmtM(cs.total*0.25)],["Opportunity Zone",/oz|opportunity/i.test(d.bondPrograms.join())?"Eligible":"Check"],
+    ["Est. financing gap",fmtM(cs.total*0.12)]])+`<div class="progs" style="margin-top:8px;">${cs.funds.map(f=>`<span class="prog">${f}</span>`).join('')}</div>`;
+  if(currentReport==='ent')return `<div class="rh">Entitlement Roadmap — "Can I get this approved?"</div>`+kvList([
+    ["Existing zoning",/Office/.test(d.type)?"Commercial / office":"Public / institutional"],["Approval path",d.scores["Entitlement Risk"]>=75?"Largely by-right / minor":"Rezone + plan amendment"],
+    ["CEQA / NEPA",d.owner==="Federal"?"NEPA (ROAD Act streamlining)":"CEQA review"],["Historic constraints",/landmark|historic|Ziggurat|Pelosi/i.test(d.name)?"Likely":"Low"],
+    ["Political risk",d.scores["Political Feasibility"]>=75?"Low":"Moderate"],["Est. entitlement timeline",em[0]+"–"+em[1]+" months"]]);
+  return '';
+}
+function closeModal(){document.getElementById('overlay').classList.remove('show');openId=null;}
 document.addEventListener('keydown',e=>{if(e.key==="Escape")closeModal();});
 
-/* ---------- JV deal-economics calculator ---------- */
-const fmt=n=>'$'+Math.round(n).toLocaleString();
-const fmtM=n=> (Math.abs(n)>=1e6)?('$'+(n/1e6).toFixed(2)+'M'):fmt(n);
-function jvDefaults(d){
-  const units=d.unitsN||200;
-  const conversion=/Office-to-residential/.test(d.type);
-  const tdcPerUnit=conversion?420:520;
-  const acqM = d.id==="ziggurat"?177 : d.id==="menlo"?137 : d.id==="henderson"?0.002 : Math.round(units*0.045);
-  const tdcM = units*tdcPerUnit/1000;
-  const profitM = +(tdcM*(conversion?0.12:0.10)).toFixed(1);
-  return {units,tdcPerUnit,acqM:Math.max(0,acqM),profitM};
+/* ---------- admin: R2 deal economics + JV ---------- */
+function adminLogin(){const pw=document.getElementById('adminPw').value;if(pw==='r2admin'){adminUnlocked=true;tier='admin';document.getElementById('tierlabel').textContent='Internal/Admin';document.getElementById('adminGate').style.display='none';document.getElementById('adminBody').style.display='block';renderAdmin();}else{document.getElementById('adminErr').style.display='block';}}
+function renderAdmin(){const opts=DATA.map(d=>`<option value="${d.id}">${d.name}</option>`).join('');
+  document.getElementById('adminBody').innerHTML=`
+    <p class="muted">Internal only — compensation, JV waterfall, and partner allocation. Not shown anywhere in the public workflow.</p>
+    <div class="toolbar"><span style="font-size:13px;font-weight:600;">Property:</span><select id="adProp" onchange="buildJV()" style="min-width:280px;">${opts}</select></div>
+    <div class="card" id="jvcard"></div>`;
+  buildJV();
 }
-function openJV(id){
-  const d=DATA.find(x=>x.id===id);if(!d)return;
-  const j=jvDefaults(d);
-  document.getElementById('modal').innerHTML=`
-    <div class="mhead"><span class="x" onclick="closeModal()">&times;</span>
-      <h2>Build the JV — ${d.name}</h2>
-      <div class="mloc">Illustrative deal economics · R Squared as site-control + partner-assembly sponsor</div></div>
-    <div class="mbody">
-      <button class="backbtn" onclick="openModal('${d.id}')">← Back to property</button>
-      <div class="jvgrid">
-        <div class="jvcol">
-          <h4>Project assumptions</h4>
-          <div class="jvfield"><label>Housing units <b id="o_units">${j.units}</b></label>
-            <input type="range" id="i_units" min="50" max="4000" step="10" value="${j.units}" oninput="calcJV()"></div>
-          <div class="jvfield"><label>Total dev cost / unit ($k) <b id="o_tdcpu">${j.tdcPerUnit}</b></label>
-            <input type="range" id="i_tdcpu" min="250" max="800" step="10" value="${j.tdcPerUnit}" oninput="calcJV()"></div>
-          <div class="jvfield"><label>Acquisition / site control ($M) <b id="o_acq">${j.acqM}</b></label>
-            <input type="range" id="i_acq" min="0" max="300" step="1" value="${Math.round(j.acqM)}" oninput="calcJV()"></div>
-          <div class="jvfield"><label>Projected project profit ($M) <b id="o_profit">${j.profitM}</b></label>
-            <input type="range" id="i_profit" min="0" max="400" step="1" value="${j.profitM}" oninput="calcJV()"></div>
-        </div>
-        <div class="jvcol">
-          <h4>R Squared economics</h4>
-          <div class="jvfield"><label>Acquisition fee (% of acq.) <b id="o_acqf">1.5%</b></label>
-            <input type="range" id="i_acqf" min="0" max="4" step="0.25" value="1.5" oninput="calcJV()"></div>
-          <div class="jvfield"><label>Developer fee (% of TDC) <b id="o_devf">4%</b></label>
-            <input type="range" id="i_devf" min="0" max="6" step="0.25" value="4" oninput="calcJV()"></div>
-          <div class="jvfield"><label>R² share of developer fee <b id="o_devs">25%</b></label>
-            <input type="range" id="i_devs" min="0" max="100" step="5" value="25" oninput="calcJV()"></div>
-          <div class="jvfield"><label>Promote / carry on profit <b id="o_prom">15%</b></label>
-            <input type="range" id="i_prom" min="0" max="30" step="1" value="15" oninput="calcJV()"></div>
-          <div class="jvfield"><label>R² share of promote <b id="o_proms">30%</b></label>
-            <input type="range" id="i_proms" min="0" max="100" step="5" value="30" oninput="calcJV()"></div>
-          <div class="jvfield"><label>Sponsor / consulting fee ($k) <b id="o_spon">250</b></label>
-            <input type="range" id="i_spon" min="0" max="1500" step="25" value="250" oninput="calcJV()"></div>
-        </div>
-      </div>
-      <div class="jvout" style="margin-top:6px;">
-        <div class="lead">R Squared estimated total compensation</div>
-        <div class="total" id="jv_total">—</div>
-        <div class="pct" id="jv_pct"></div>
-        <div class="jvbreak" id="jv_break"></div>
-      </div>
-      <div class="note">Highly simplified, illustrative model of how R Squared could be compensated as the site-control and partner-assembly sponsor in a JV — not a pro forma, offer, or guarantee. Adjust the sliders to pressure-test scenarios.</div>
-    </div>`;
-  document.getElementById('overlay').classList.add('show');
+function buildJV(){const id=document.getElementById('adProp').value;const d=DATA.find(x=>x.id===id);const units=unitsN(d),tpu=tdcPerUnit(d),acqM=Math.round(acqLikely(d)/1e6),profitM=+(tdc(d)*0.10/1e6).toFixed(1);
+  document.getElementById('jvcard').innerHTML=`
+    <div class="jvgrid" style="display:grid;grid-template-columns:1fr 1fr;gap:22px;">
+      <div><h4 style="color:var(--blue);font-size:12px;text-transform:uppercase;">Project</h4>
+        ${slider('Units','i_units',50,4000,10,units)}${slider('TDC / unit ($k)','i_tdcpu',250,800,10,tpu)}${slider('Acquisition ($M)','i_acq',0,300,1,acqM)}${slider('Projected profit ($M)','i_profit',0,400,1,profitM)}</div>
+      <div><h4 style="color:var(--blue);font-size:12px;text-transform:uppercase;">R² economics</h4>
+        ${slider('Acquisition fee (%)','i_acqf',0,4,0.25,1.5)}${slider('Developer fee (% TDC)','i_devf',0,6,0.25,4)}${slider('R² share of dev fee (%)','i_devs',0,100,5,25)}${slider('Promote / carry (%)','i_prom',0,30,1,15)}${slider('R² share of promote (%)','i_proms',0,100,5,30)}${slider('Sponsor fee ($k)','i_spon',0,1500,25,250)}</div>
+    </div>
+    <div class="jvout" style="background:linear-gradient(135deg,#eef4fc,#e3edf9);border:1px solid #cfdcef;border-radius:12px;padding:16px 18px;margin-top:8px;">
+      <div class="muted" style="text-transform:uppercase;font-size:12px;letter-spacing:.6px;">R Squared estimated total compensation</div>
+      <div id="jv_total" style="font-size:32px;font-weight:800;color:var(--navy);">—</div>
+      <div id="jv_pct" style="color:var(--green);font-weight:700;font-size:12.5px;"></div>
+      <div id="jv_break" style="margin-top:10px;font-size:12.5px;"></div></div>
+    <div class="note">Illustrative internal model — acquisition fee, developer-fee share, promote, sponsor fee. Not a pro forma or offer.</div>`;
   calcJV();
 }
-function calcJV(){
+function slider(label,id,min,max,step,val){return `<div style="margin-bottom:11px;"><label style="display:flex;justify-content:space-between;font-size:12.5px;margin-bottom:3px;">${label} <b id="o_${id}" style="color:var(--navy);">${val}</b></label><input type="range" id="${id}" min="${min}" max="${max}" step="${step}" value="${val}" oninput="calcJV()" style="width:100%;"></div>`;}
+function calcJV(){const card=document.getElementById('jvcard');if(!card||!document.getElementById('i_units'))return;
   const g=k=>parseFloat(document.getElementById(k).value);
-  const units=g('i_units'), tdcpu=g('i_tdcpu'), acqM=g('i_acq'), profitM=g('i_profit');
-  const acqf=g('i_acqf'), devf=g('i_devf'), devs=g('i_devs'), prom=g('i_prom'), proms=g('i_proms'), spon=g('i_spon');
-  document.getElementById('o_units').textContent=units.toLocaleString();
-  document.getElementById('o_tdcpu').textContent=tdcpu;
-  document.getElementById('o_acq').textContent=acqM;
-  document.getElementById('o_profit').textContent=profitM;
-  document.getElementById('o_acqf').textContent=acqf+'%';
-  document.getElementById('o_devf').textContent=devf+'%';
-  document.getElementById('o_devs').textContent=devs+'%';
-  document.getElementById('o_prom').textContent=prom+'%';
-  document.getElementById('o_proms').textContent=proms+'%';
-  document.getElementById('o_spon').textContent=spon;
-  const TDC=units*tdcpu*1000, acq=acqM*1e6, profit=profitM*1e6;
-  const acqFee=acq*acqf/100, devFeeTotal=TDC*devf/100, r2Dev=devFeeTotal*devs/100;
-  const promotePool=profit*prom/100, r2Prom=promotePool*proms/100, sponFee=spon*1000;
+  const units=g('i_units'),tpu=g('i_tdcpu'),acqM=g('i_acq'),profitM=g('i_profit'),acqf=g('i_acqf'),devf=g('i_devf'),devs=g('i_devs'),prom=g('i_prom'),proms=g('i_proms'),spon=g('i_spon');
+  ['i_units','i_tdcpu','i_acq','i_profit','i_acqf','i_devf','i_devs','i_prom','i_proms','i_spon'].forEach(k=>{const o=document.getElementById('o_'+k);if(o)o.textContent=document.getElementById(k).value;});
+  const TDC=units*tpu*1000,acq=acqM*1e6,profit=profitM*1e6;
+  const acqFee=acq*acqf/100,devFee=TDC*devf/100,r2Dev=devFee*devs/100,promPool=profit*prom/100,r2Prom=promPool*proms/100,sponFee=spon*1000;
   const total=acqFee+r2Dev+r2Prom+sponFee;
   document.getElementById('jv_total').textContent=fmtM(total);
-  document.getElementById('jv_pct').textContent=`≈ ${(total/TDC*100).toFixed(2)}% of $${(TDC/1e6).toFixed(0)}M total development cost`;
-  document.getElementById('jv_break').innerHTML=[
-    ["Acquisition fee",acqFee],["R² share of developer fee",r2Dev],
-    ["R² promote / carry",r2Prom],["Sponsor / consulting fee",sponFee]
-  ].map(r=>`<div class="r"><span>${r[0]}</span><b>${fmtM(r[1])}</b></div>`).join('')
-   + `<div class="r"><span>Total development cost (context)</span><b>${fmtM(TDC)}</b></div>`;
+  document.getElementById('jv_pct').textContent=`≈ ${(total/TDC*100).toFixed(2)}% of ${fmtM(TDC)} total development cost`;
+  document.getElementById('jv_break').innerHTML=[["Acquisition fee",acqFee],["R² share of developer fee",r2Dev],["R² promote / carry",r2Prom],["Sponsor fee",sponFee],["Total development cost (context)",TDC]].map(r=>`<div style="display:flex;justify-content:space-between;border-bottom:1px dashed #d6e0ee;padding:3px 0;"><span>${r[0]}</span><b style="color:var(--navy);">${fmtM(r[1])}</b></div>`).join('');
 }
 
-setupChips();stats();render();
+/* ---------- init ---------- */
+setupChips();renderOpps();
 </script>
 </body>
 </html>
